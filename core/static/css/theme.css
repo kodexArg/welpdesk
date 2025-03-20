@@ -1,0 +1,125 @@
+/* AI: Todas las variables y colores globales del proyecto están definidos aquí. Consultar este archivo para el sistema de diseño. */
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:2wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:2wght@100..900&display=swap');
+
+@theme {
+    /* Tipografía */
+    --font-brand: 'Grandstander', cursive;
+    --font-sans: 'Noto Sans', ui-sans-serif, system-ui, sans-serif; 
+    --font-ui: 'Roboto Condensed', 'Noto Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-title: 'Roboto Slab', ui-sans-serif, system-ui, sans-serif;
+    
+    /* Layout */
+    --header-height: 4rem;
+    --footer-height: 0.5rem;
+    --scrollbar-width: 1.25rem;
+    
+    /* Paleta earth - Tonos más cálidos y vibrantes */
+    --color-earth-50: #fdf6ee;
+    --color-earth-100: #fae8d6;
+    --color-earth-200: #f5d0ad;
+    --color-earth-300: #f0b17d;
+    --color-earth-400: #eb9651;
+    --color-earth-500: #e27b2c;
+    --color-earth-600: #c45e1d;
+    --color-earth-700: #954616;
+    --color-earth-800: #68310f;
+    --color-earth-900: #3b1c08;
+    --color-earth-950: #1a0c03;
+
+    /* Paleta sky - Tonos más profundos */
+    --color-sky-50: #f4fafd;
+    --color-sky-100: #e6f1f9;
+    --color-sky-200: #cce3f3;
+    --color-sky-300: #a9d1ea;
+    --color-sky-400: #83bddf;
+    --color-sky-500: #5ca8d6;
+    --color-sky-600: #3d88be;
+    --color-sky-700: #2e6996;
+    --color-sky-800: #1f4764;
+    --color-sky-900: #0f2332;
+    --color-sky-950: #071219;
+    
+    /* Sistema base */
+    --color-primary: var(--color-sky-700);
+    --color-secondary: var(--color-earth-600);
+    --color-disabled: var(--color-gray-200);
+    --text-primary: var(--color-sky-100);
+    --text-secondary: var(--color-earth-100);
+    --text-disabled: var(--color-gray-700);
+
+    /* Navbar y elementos relacionados */
+    --navbar-bg: var(--color-sky-800);
+    --navbar-link-text: #fff;
+    --navbar-link-hover: var(--color-sky-200);
+    --navbar-link-active: var(--color-sky-200);
+    --navbar-separator: var(--color-sky-800);
+    --navbar-separator-opacity: 0.8;
+    --scrollbar-bg: var(--navbar-bg);
+    --scrollbar-thumb: var(--color-sky-600);
+    --scrollbar-thumb-hover: var(--color-sky-500);
+    --footer-bg: var(--navbar-bg);
+
+    /* Tags */
+    --color-tag-udn-bg: #fff8e1;
+    --color-tag-udn-text: #a86922;
+    --color-tag-udn-border: #ffecb3;
+    --color-tag-sector-bg: #e3f2fd;
+    --color-tag-sector-text: #5d6f91;
+    --color-tag-sector-border: #bbdefb;
+    --color-tag-category-bg: #f3e5f5;
+    --color-tag-category-text: #796491;
+    --color-tag-category-border: #d1c4e9;
+    
+    /* Estados de tickets */
+    --color-status-open-bg: #FFDEDE;
+    --color-status-open-text: #C62828;
+    --color-status-open-border: #FFCDD2;
+    --color-status-pending-bg: #E8F5E9;
+    --color-status-pending-text: #407143;
+    --color-status-pending-border: #C8E6C9;
+    --color-status-closed-bg: #EEEEEE;
+    --color-status-closed-text: #424242;
+    --color-status-closed-border: #E0E0E0;
+    
+    /* Paginación */
+    --pagination-info-color: var(--color-sky-800);
+    --pagination-border-radius: 4px;
+    --pagination-spacing: 0.5rem;
+}
+
+/* Estilos de paginación */
+.pagination-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pagination-spacing);
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-sky-200);
+}
+
+.pagination-info {
+    color: var(--pagination-info-color);
+    font-weight: 500;
+    padding: 0 1rem;
+}
+
+/* Estilos responsivos para paginación */
+@media (max-width: 550px) {
+    .pagination-controls {
+        gap: 0.25rem;
+    }
+    
+    .pagination-info {
+        width: 100%;
+        text-align: center;
+        margin: 0.5rem 0;
+        order: -1;
+    }
+}

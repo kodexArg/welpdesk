@@ -1,0 +1,38 @@
+<div id="attachment-group-{{ index }}" class="flex items-center relative mb-4">
+    <div class="relative flex-grow">
+        <label for="file-input-{{ index }}" class="sr-only">Seleccionar archivo</label>
+        <input id="file-input-{{ index }}" 
+               type="file" 
+               name="attachment-file-{{ index }}" 
+               data-index="{{ index }}" 
+               onchange="updateFilename(this, {{ index }})" 
+               class="hidden">
+        
+        <div class="absolute left-2 top-1/2 transform -translate-y-1/2 text-sky-500">
+            <i class="fa fa-paperclip"></i>
+        </div>
+        
+        <input type="text" 
+               id="attachment-name-{{ index }}" 
+               name="attachment-name-{{ index }}" 
+               data-index="{{ index }}" 
+               placeholder="Click para seleccionar archivo" 
+               readonly 
+               onclick="if(this.value === '') document.getElementById('file-input-{{ index }}').click()" 
+               class="cursor-pointer w-full pl-9 py-1.5 border border-earth-200 
+                      rounded-lg focus:outline-none focus:ring-1 focus:ring-sky-500 text-sm">
+    </div>
+    
+    <button type="button" 
+            class="ml-2 bg-gray-100 border border-gray-300 text-gray-500 rounded-full p-1.5 inline-flex items-center hover:bg-red-50 hover:text-red-500 hover:border-red-300 transition-colors"
+            data-index="{{ index }}"
+            hx-delete="{% url 'htmx-remove-attachment' %}"
+            hx-target="#attachment-group-{{ index }}"
+            hx-swap="outerHTML"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        <i class="fa fa-trash"></i>
+    </button>
+
+    <!-- Mensaje de error -->
+    <div class="file-size-error text-red-500 text-xs absolute -bottom-4 left-0 right-0"></div>
+</div>

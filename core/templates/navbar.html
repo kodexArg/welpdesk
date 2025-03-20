@@ -1,0 +1,17 @@
+<nav class="flex justify-between items-center px-4 py-2 bg-[var(--navbar-bg)] shadow-md">
+    {% component "brand-logo" / %}
+    
+    <div class="flex items-center space-x-1">
+        {% if user.is_authenticated %}
+            {% component "nav-link" link="create-ticket" icon="fa fa-plus" label="REPORTE" current_view=request.resolver_match.view_name / %}
+            {% component "separator" / %}
+            {% component "nav-link" link="ticket-list" icon="fa fa-list" label="TICKETS" current_view=request.resolver_match.view_name / %}
+            {% component "separator" / %}
+            {% component "nav-link" link="home" icon="fa fa-home" label="INICIO" current_view=request.resolver_match.view_name / %}
+            {% component "separator" / %}
+            {% component "logout" / %}
+        {% else %}
+            {% component "nav-link" link="login" icon="fa fa-sign-in" label="INGRESAR" always_show_label=True current_view=request.resolver_match.view_name / %}
+        {% endif %}
+    </div>
+</nav>

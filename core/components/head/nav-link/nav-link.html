@@ -1,0 +1,23 @@
+<a href="{% url link %}" 
+   class="group relative inline-flex items-center justify-center 
+          px-2 py-2 
+          font-ui 
+          transition-colors duration-200 
+          no-underline">
+    <div class="flex items-center 
+                text-[var(--navbar-link-text)] 
+                group-hover:text-[var(--navbar-link-hover)] 
+                {% if active %}
+                    !text-[var(--navbar-link-active)] 
+                    translate-x-[-0.05rem] translate-y-[0.05rem]
+                {% endif %}">
+        <i class="text-xl sm:text-2xl 
+                  {{ icon }} 
+                  transition-colors duration-100"></i>
+        <span class="ml-2 {% if not always_show_label %}hidden md:inline{% endif %}
+                     text-xl font-medium 
+                     tracking-wide">
+            {{ label }}
+        </span>
+    </div>
+</a> 

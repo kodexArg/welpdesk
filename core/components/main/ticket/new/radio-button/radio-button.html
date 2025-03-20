@@ -1,0 +1,27 @@
+{% if visible %}
+<div class="flex flex-1">
+  <input class="sr-only peer" 
+         type="radio" 
+         name="{{ target }}" 
+         id="{{ target }}_{{ id }}" 
+         value="{{ id }}"
+         hx-get="{{ full_url }}"
+         hx-target="#{{ next_target }}-container"
+         hx-swap="outerHTML">
+  <label for="{{ target }}_{{ id }}" class="
+         inline-flex items-center justify-center
+         w-full
+         px-5 py-3 rounded
+         bg-gray-100 text-gray-500 border border-gray-300
+         font-semibold font-ui uppercase whitespace-nowrap text-lg tracking-wider
+         transition-all duration-200
+         shadow-md
+         cursor-pointer
+         hover:shadow-lg hover:scale-103 hover:brightness-90
+         active:scale-95
+         peer-checked:bg-sky-700 peer-checked:text-white peer-checked:border-sky-200
+         radio-button-label">
+      {{ label }}
+  </label>
+</div>
+{% endif %}

@@ -1,0 +1,147 @@
+{% load custom_tags %}
+{% is_ticket_owner ticket.id as is_owner %}
+
+<article id="ticket-{{ ticket.id }}" class="rounded-2xl p-3 mb-3">
+
+    <details>
+        <summary class="list-none cursor-pointer flex justify-between items-center">
+            <span class="flex-grow">
+                <i class="fa fa-caret-down transform transition-transform duration-200 caret-icon"></i>
+                {{ ticket.issue.display_name }}
+            </span>
+            <div class="flex flex-wrap gap-2 justify-end items-center">
+                {% if not is_owner %}
+                    <span class="tag tag-other-user" title="Ticket de otro usuario">
+                        <i class="fa fa-user text-earth-200"></i>
+                    </span>
+                {% else %}
+                    {% if request.user.is_staff or request.user|is_auditor or request.user|is_support %}
+                        <span class="tag tag-other-user" title="Ticket propio">
+                            <i class="fa fa-user text-green-200"></i>
+                        </span>
+                    {% endif %}
+                {% endif %}
+                    <span class="tag tag-udn">{{ ticket.udn }}</span>
+                    <span class="tag tag-sector">{{ ticket.sector }}</span>
+                    <span class="tag tag-category">{{ ticket.issue_category }}</span>
+                {% with last_message=ticket.messages.last %}
+                    {% if last_message %}
+                        <span class="status status-{{ last_message.status|lower }} gap-2">
+                            <i class="fa 
+                            {% if last_message.status == 'closed' %}fa-check-circle
+                            {% elif last_message.status == 'solved' %}fa-wrench
+                            {% elif last_message.status == 'open' %}fa-exclamation-circle
+                            {% else %}fa-circle-o{% endif %}"></i> 
+                            {{ last_message.get_status_display }}
+                        </span>
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </summary>
+        
+        {% with last_message=ticket.messages.last %}
+        <div class="ticket-details rounded-2xl p-3 -mb-1 -mx-1 mt-3 shadow-inner border border-sky-200
+            {% if last_message.status == 'closed' %}
+                bg-striped
+            {% else %}
+                bg-sky-50
+            {% endif %}
+            select-none">
+        {% endwith %}
+            {% for message in ticket.messages.all %}
+                <div>
+                    <span class="text-sm text-gray-500 italic ml-2 " style="transform: translateY(0.02rem);">
+                        {{ message.get_status_display|title }} por
+                        <i class="fa fa-user"></i>
+                        {% if message.user.first_name or message.user.last_name %}
+                            {{ message.user.first_name }} {{ message.user.last_name }}
+                        {% else %}
+                            {{ message.user.username }}
+                        {% endif %}
+                    </span>
+                    <span class="text-xs text-gray-500 italic ml-2 pointer-events-none" style="transform: translateY(0.02rem);">
+                        {{ message.created_on|date:"j \d\e N, H:i" }}
+                    </span>
+                    <div>
+                        {% if message.body %}
+                            <div class="ml-8 mb-2 bg-white border border-earth-200 text-sm p-1.5 rounded-xl text-earth-700">
+                                {{ message.body }}
+                            </div>
+                        {% elif message.status == 'closed' %}
+                            <!-- No mostrar nada para mensajes de cierre sin cuerpo -->
+                        {% else %}
+                            <div class="ml-8 mb-2 bg-white border border-earth-200 text-sm p-1.5 rounded-xl text-earth-700">
+                                <em>{{ ticket.issue.display_name }}</em>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if message.attachments.all %}
+                        {% for attachment in message.attachments.all %}
+                            <div class="pb-2 pt-0 py-3 min-w-full">
+                                <a href="{{ attachment.file.url }}" target="_blank" class="flex justify-end text-xs text-earth-700 hover:bg-sky-50 hover:border-sky-300">
+                                    <i class="fa fa-paperclip mr-1 text-sky-500"></i>
+                                    <span>{{ attachment.filename }}</span>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p>No hay mensajes en este ticket.</p>
+            {% endfor %}
+        </div>
+        {% with last_message=ticket.messages.last %}
+            {% if last_message.status != 'closed' %}
+                <div class="flex justify-end gap-3 mt-4">
+                    <a href="{% url 'ticket-view' ticket.id %}" class="text-xs bg-[var(--color-sky-700)] border border-[var(--color-sky-500)] text-white rounded-full py-1 px-3 inline-flex items-center no-underline font-medium hover:brightness-110">
+                        <i class="fa fa-paper-plane mr-1"></i>
+                        <span>RESPONDER</span>
+                    </a>
+                    {% if is_owner %}
+                    <button 
+                        class="text-xs bg-gray-100 border border-gray-300 text-gray-500 rounded-full py-1 px-3 inline-flex items-center font-medium hover:brightness-110"
+                        type="button"
+                        hx-get="{% url 'htmx-confirm-close' ticket.id %}"
+                        hx-target="body"
+                        hx-swap="beforeend"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                        <i class="fa fa-check-circle mr-1"></i>
+                        <span>CERRAR TICKET</span>
+                    </button>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="flex justify-end gap-3 mt-4">
+                    <span class="text-xs bg-gray-100 border border-gray-300 text-gray-500 rounded-full py-1 px-3 inline-flex items-center opacity-50 font-medium">
+                        <i class="fa fa-check-circle mr-1"></i>
+                        <span>TICKET CERRADO</span>
+                    </span>
+                </div>
+            {% endif %}
+        {% endwith %}
+    </details>
+</article>
+
+{% block styles %}
+<style>
+    /* Estilos que no se pueden implementar con Tailwind */
+    details > summary::-webkit-details-marker {
+        display: none;
+    }
+    
+    details[open] summary .caret-icon {
+        transform: rotate(180deg);
+    }
+    
+    .bg-striped {
+        background-image: repeating-linear-gradient(
+            45deg,
+            var(--color-sky-50),
+            var(--color-sky-50) 0.2rem,
+            var(--color-white) 0.2rem,
+            var(--color-white) 0.4rem
+        );
+        background-size: 100% 100%;
+    }
+</style>
+{% endblock %}

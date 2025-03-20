@@ -1,0 +1,174 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}WelpDesk - Crear Ticket{% endblock %}
+
+
+{% block content %}
+<section>
+    <form method="post" enctype="multipart/form-data" hx-target="this" hx-swap="outerHTML" id="ticket-form">
+
+        {% csrf_token %}
+
+        <h2>Crear Ticket</h2>
+
+        <article id="udn-container"
+                hx-get="{% url 'htmx-udn' %}"
+                hx-target="#udn-container"
+                hx-trigger="load">
+        </article>
+
+        <article id="sector-container" class="hidden-container">
+        </article>
+
+        <article id="issue-category-container" class="hidden-container">
+        </article>
+
+        <article id="issue-container" class="hidden-container">
+        </article>
+
+        <article id="ticket-details-container" class="hidden-container">
+        </article>
+
+        <!-- Botones -->
+        <article id="button-container" class="mt-4 w-full">
+            <div class="grid grid-cols-2 gap-4 w-full">
+                {% component "button" 
+                    label="CREAR TICKET" 
+                    id="create-ticket-button" 
+                    disabled=True 
+                / %}
+                {% component "button" 
+                    label="CANCELAR" 
+                    action="{% url 'home' %}" 
+                    cancel=True
+                    icon="fas fa-times"
+                / %}
+            </div>
+        </article>
+        
+        <!-- Contenedor para errores -->
+        <div id="form-error">
+            {% if form.errors %}
+                <p>Errores en el formulario:</p>
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                        <li>{{ field }}: {{ errors|join:", " }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        
+        <!-- Espacio adicional para evitar que el footer suba demasiado -->
+        <div class="form-footer-space"></div>
+    </form>
+</section>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .hidden-container {
+        display: none;
+    }
+    
+    /* Espacio adicional para separar el contenido del footer */
+    .form-footer-space {
+        @apply h-20 w-full;
+    }
+    
+    /* Asegurarse de que el contenido tenga suficiente espacio al final */
+    #ticket-form {
+        @apply mb-8 pb-8;
+    }
+
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    /**
+     * Resetea las secciones posteriores a la sección especificada.
+     */
+    function resetSubsequentSections(sectionId) {
+        const sections = ['udn-container', 'sector-container', 'issue-category-container', 'issue-container', 'ticket-details-container'];
+        const currentIndex = sections.indexOf(sectionId);
+        if (currentIndex === -1 || currentIndex === sections.length - 1) return;
+        
+        console.log(`Reseteando secciones después de ${sectionId}`);
+        
+        for (let i = currentIndex + 1; i < sections.length; i++) {
+            const container = document.getElementById(sections[i]);
+            if (container) {
+                console.log(`Ocultando contenedor: ${sections[i]}`);
+                container.classList.add('hidden-container');
+                container.classList.remove('selected-category');
+            }
+        }
+        
+        for (let i = currentIndex + 1; i < sections.length; i++) {
+            const container = document.getElementById(sections[i]);
+            if (container) {
+                const radioButtons = container.querySelectorAll('input[type="radio"]');
+                radioButtons.forEach(radio => {
+                    radio.checked = false;
+                });
+                
+                const textInputs = container.querySelectorAll('input[type="text"], textarea');
+                textInputs.forEach(input => {
+                    input.value = '';
+                });
+            }
+        }
+        
+        const createButton = document.getElementById('create-ticket-button');
+        if (createButton) {
+            createButton.disabled = true;
+        }
+    }
+    
+    /**
+     * Maneja los clics en los botones de radio.
+     */
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('input[type="radio"]')) {
+            const containerId = e.target.name === 'udn' ? 'udn-container' : 
+                              e.target.name === 'sector' ? 'sector-container' :
+                              e.target.name === 'issue_category' ? 'issue-category-container' :
+                              e.target.name === 'issue' ? 'issue-container' : null;
+            
+            if (containerId) {
+                const container = document.getElementById(containerId);
+                if (container && !container.classList.contains('selected-category')) {
+                    container.classList.add('selected-category');
+                }
+            }
+        }
+        
+        if (e.target.matches('input[name="udn"]')) {
+            resetSubsequentSections('udn-container');
+        } else if (e.target.matches('input[name="sector"]')) {
+            resetSubsequentSections('sector-container');
+        } else if (e.target.matches('input[name="issue_category"]')) {
+            resetSubsequentSections('issue-category-container');
+        }
+    });
+    
+    
+    /**
+     * Maneja el contenido dinámico cargado por HTMX. Se dispara cuando HTMX cambia contenido y habilita CREAR TICKET
+     */
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.id === 'ticket-details-container') {
+            const createButton = document.getElementById('create-ticket-button');
+            if (createButton) {
+                createButton.disabled = false;
+                createButton.classList.add('create-button-enabled');
+            }
+            
+            if (typeof initializeAttachments === 'function') {
+                initializeAttachments();
+            }
+        }
+    });
+</script>
+{% endblock %}

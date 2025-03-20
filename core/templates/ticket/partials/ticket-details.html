@@ -1,0 +1,118 @@
+<article id="ticket-details-container" class="select-category">
+    <label>Detalles del Ticket:</label>
+        <div class="ticket-details-form">
+            <div class="form-group">
+                <textarea name="body" id="body" class="form-control" placeholder="{{ issue.name }}: {{ issue.description }}"></textarea>
+            </div>
+            
+            <!-- Sección de adjuntos -->
+            <div class="attachments-container mt-3 border-t border-sky-100 pt-3">
+                <div class="flex items-center mb-2">
+                    <span class="text-sm font-medium text-gray-600"><i class="fa fa-paperclip mr-1 text-sky-500"></i>Adjuntos:</span>
+                </div>
+                <div id="attachments-list" class="space-y-2 mb-3">
+                    <!-- No initial attachment - empty container -->
+                </div>
+                <button type="button" id="add-attachment" class="text-xs bg-[var(--color-sky-700)] border border-[var(--color-sky-500)] text-white rounded-full py-1 px-3 inline-flex items-center no-underline font-medium hover:brightness-110"
+                        hx-post="{% url 'htmx-add-attachment' %}"
+                        hx-target="#attachments-list"
+                        hx-swap="beforeend"
+                        hx-include="form"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                    <i class="fa fa-paperclip mr-1"></i> Adjuntar
+                </button>
+            </div>
+        </div>
+    <div id="ticket-details-error" class="htmx-indicator error-message" style="color: red;"></div>
+</article>
+
+<script>
+    // Store attachment indices in a global array to track them
+    window.attachmentIndices = [];
+
+    // Updated function with direct ID targeting
+    function updateFilename(fileInput, index) {
+        // Keep track of this index
+        if (!window.attachmentIndices.includes(index)) {
+            window.attachmentIndices.push(index);
+        }
+        
+        // Use direct ID reference
+        const nameInput = document.getElementById(`attachment-name-${index}`);
+        if (!nameInput) {
+            console.error(`Could not find name input with id=attachment-name-${index}`);
+            return;
+        }
+        
+        const attachmentGroup = document.getElementById(`attachment-group-${index}`);
+        if (!attachmentGroup) {
+            console.error(`Could not find attachment group with id=attachment-group-${index}`);
+            return;
+        }
+        
+        const errorDiv = attachmentGroup.querySelector('.file-size-error');
+        if (!errorDiv) {
+            console.error('Could not find error message element');
+            return;
+        }
+        
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB en bytes
+            
+            if (file.size > MAX_FILE_SIZE) {
+                errorDiv.textContent = `El archivo excede el límite de 50MB`;
+                fileInput.value = '';
+                nameInput.value = '';
+                nameInput.setAttribute('readonly', true);
+            } else {
+                errorDiv.textContent = '';
+                nameInput.value = file.name;
+                nameInput.removeAttribute('readonly');
+                nameInput.focus();
+                nameInput.select(); // Select the text for easy editing
+            }
+        } else {
+            nameInput.value = '';
+            nameInput.setAttribute('readonly', true);
+        }
+    }
+    
+    // Asegurar que el formulario padre tenga el atributo enctype correcto
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        if (form) {
+            // Asegurar que el formulario tenga el atributo enctype correcto
+            if (!form.getAttribute('enctype') || form.getAttribute('enctype') !== 'multipart/form-data') {
+                console.log('Añadiendo atributo enctype="multipart/form-data" al formulario');
+                form.setAttribute('enctype', 'multipart/form-data');
+            }
+            
+            // Añadir el campo oculto para rastrear índices
+            let indexTracker = document.getElementById('attachment-highest-index');
+            if (!indexTracker) {
+                indexTracker = document.createElement('input');
+                indexTracker.type = 'hidden';
+                indexTracker.name = 'attachment-highest-index';
+                indexTracker.id = 'attachment-highest-index';
+                indexTracker.value = '0';
+                form.appendChild(indexTracker);
+                console.log('Campo de índice de adjuntos añadido al formulario');
+            }
+        } else {
+            console.error('No se encontró ningún formulario en la página');
+        }
+    });
+    
+    // Actualizar el valor del índice más alto cuando se añade un nuevo adjunto
+    document.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.id === 'attachments-list') {
+            const indexTracker = document.getElementById('attachment-highest-index');
+            if (indexTracker && window.attachmentIndices.length > 0) {
+                const highestIndex = Math.max(...window.attachmentIndices);
+                indexTracker.value = highestIndex;
+                console.log(`Índice más alto actualizado a: ${highestIndex}`);
+            }
+        }
+    });
+</script>

@@ -1,0 +1,23 @@
+<button
+    class="{{ css_class }}"
+    {% if is_submit %}
+        type="submit"
+    {% else %}
+        type="button"
+        {% for attr, value in htmx_attrs.items %}
+            {{ attr }}="{{ value }}"
+        {% endfor %}
+    {% endif %}
+    {% if id %}
+        id="{{ id }}"
+    {% endif %}
+    {% if disabled %}
+        disabled
+    {% endif %}>
+    
+    {% if icon %}
+        <i class="{{ icon }}"></i>
+    {% endif %}
+
+    <span>{{ label }}</span>
+</button> 

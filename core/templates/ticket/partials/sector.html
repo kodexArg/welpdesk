@@ -1,0 +1,12 @@
+<article id="sector-container">
+    <label>Sector:</label>
+    <div class="radio-button-group">
+        {% for sector in sectors %}
+            {% component "radio-button"
+                target="sector"
+                id=sector.pk
+                label=sector.name
+                next_target="issue-category" / %}
+        {% endfor %}
+    </div>
+</article>

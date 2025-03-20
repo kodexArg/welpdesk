@@ -1,0 +1,259 @@
+{% extends "layout.html" %}
+{% load custom_tags %}
+{% block title %}HelpDesk - Ticket{% endblock %}
+
+{% block content %}
+<section>
+    <article>
+        <!-- Sección de información del ticket -->
+        <div class="row">
+            <div class="twelve columns">
+                <h2>Ticket: {{ ticket.issue.display_name }}</h2>
+                <!-- Tags del ticket con clases de custom.css -->
+                <div class="flex flex-wrap gap-2 justify-center mb-6">
+                    <span class="tag tag-udn">{{ ticket.udn }}</span>
+                    <span class="tag tag-sector">{{ ticket.sector }}</span>
+                    <span class="tag tag-category">{{ ticket.issue_category }}</span>
+                    {% with last_message=ticket.messages.last %}
+                        {% if last_message %}
+                        <!-- Estado del ticket usando las clases de status definidas en custom.css -->
+                        <span class="status status-{{ last_message.status|lower }}">
+                            <i class="fa fa-circle-o"></i> {{ last_message.get_status_display }}
+                        </span>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                
+                <!-- Sección de mensajes del ticket -->
+                {% for message in ticket.messages.all %}
+                <div class="ticket-message">
+                    <div class="flex justify-between items-start">
+                        <span>
+                            {{ message.get_status_display|title }} por
+                            <i class="fa fa-user"></i>
+                            {% if message.user.first_name or message.user.last_name %}
+                                {{ message.user.first_name }} {{ message.user.last_name }}
+                            {% else %}
+                                {{ message.user.username }}
+                            {% endif %}
+                        </span>
+                        <span class="text-xs text-gray-500 italic ml-2" style="transform: translateY(0.02rem);">
+                            {{ message.created_on|date:"j \d\e N, H:i" }}
+                        </span>
+                    </div>
+                    <div>
+                        {% if message.body %}
+                            <div class="ml-8 mb-2 bg-white border border-earth-200 text-sm p-1.5 rounded-xl text-earth-700">
+                                {{ message.body }}
+                            </div>
+                        {% elif message.status == 'closed' %}
+                            <!-- No mostrar nada para mensajes de cierre sin cuerpo -->
+                        {% else %}
+                            <div class="ml-8 mb-2 bg-white border border-earth-200 text-sm p-1.5 rounded-xl text-earth-700">
+                                <em>{{ ticket.issue.display_name }}</em>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if message.attachments.all %}
+                    <div>
+                        <span>Adjuntos:</span>
+                        {% for attachment in message.attachments.all %}
+                            <div>
+                                <a href="{{ attachment.file.url }}" target="_blank">
+                                    <i class="fa fa-paperclip"></i>
+                                    {{ attachment.filename }}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                
+                <!-- Separador simple entre historial y respuesta -->
+                <hr>
+                
+                <!-- Formulario de respuesta -->
+                <form method="post" action="{% url 'ticket-view' ticket.id %}" enctype="multipart/form-data" id="ticket-form">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="twelve columns">
+                            <textarea id="message-body" name="body" rows="5" class="u-full-width" placeholder="Escribir respuesta..."></textarea>
+                        </div>
+                    </div>
+                    
+                    {% comment %} <!-- Sección de adjuntos - usando HTMX como en ticket-details.html -->
+                    <div class="attachments-container">
+                        <div id="attachments-list" class="space-y-2 mb-3">
+                            <!-- Contenedor vacío inicial para adjuntos -->
+                        </div>
+                        <button type="button" class="button"
+                                hx-post="{% url 'htmx-add-attachment' %}"
+                                hx-target="#attachments-list"
+                                hx-swap="beforeend"
+                                hx-include="form"
+                                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                            <i class="fa fa-paperclip"></i> Agregar Adjunto
+                        </button>
+                    </div> {% endcomment %}
+                    
+                    <!-- Campo oculto para el estado - se actualizará mediante JavaScript -->
+                    <input type="hidden" name="status" id="status-field" value="feedback">
+                    
+                    <!-- Sección de botones en un article al final -->
+                    <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+                        {% component "button" 
+                            label="Responder" 
+                            id="btn-feedback"
+                            icon="fa fa-paper-plane"
+                            color="button-primary"
+                            disabled=False
+                            action="submit"
+                        / %}
+                        
+                        {% if user|is_support %}
+                        {% component "button" 
+                            label="Solución" 
+                            id="btn-solved"
+                            icon="fa fa-wrench"
+                            color="button-primary"
+                            disabled=False
+                            action="submit"
+                        / %}
+                        {% endif %}
+                        
+                        {% is_ticket_owner ticket.id as user_is_owner %}
+                        {% if user_is_owner %}
+                            {% component "button" 
+                                label="Cerrar" 
+                                id="btn-closed"
+                                icon="fa fa-check-circle"
+                                color="button-success"
+                                disabled=False
+                                action="submit"
+                            / %}
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </article>
+</section>
+
+<script>
+    // Almacenar índices de adjuntos
+    window.attachmentIndices = [];
+
+    // Actualizar nombre de archivo
+    function updateFilename(fileInput, index) {
+        // Mantener registro de este índice
+        if (!window.attachmentIndices.includes(index)) {
+            window.attachmentIndices.push(index);
+        }
+        
+        // Referencia directa por ID
+        const nameInput = document.getElementById(`attachment-name-${index}`);
+        if (!nameInput) {
+            console.error(`No se encontró el input con id=attachment-name-${index}`);
+            return;
+        }
+        
+        const attachmentGroup = document.getElementById(`attachment-group-${index}`);
+        if (!attachmentGroup) {
+            console.error(`No se encontró el grupo de adjuntos con id=attachment-group-${index}`);
+            return;
+        }
+        
+        const errorDiv = attachmentGroup.querySelector('.file-size-error');
+        if (!errorDiv) {
+            console.error('No se encontró el elemento de error');
+            return;
+        }
+        
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB en bytes
+            
+            if (file.size > MAX_FILE_SIZE) {
+                errorDiv.textContent = `El archivo excede el límite de 50MB`;
+                fileInput.value = '';
+                nameInput.value = '';
+                nameInput.setAttribute('readonly', true);
+            } else {
+                errorDiv.textContent = '';
+                nameInput.value = file.name;
+                nameInput.removeAttribute('readonly');
+                nameInput.focus();
+                nameInput.select(); // Seleccionar el texto para edición fácil
+            }
+        } else {
+            nameInput.value = '';
+            nameInput.setAttribute('readonly', true);
+        }
+    }
+    
+    // Configuración inicial al cargar el documento
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const messageBody = document.getElementById('message-body');
+        
+        // Asegurar que el formulario tenga el atributo enctype correcto
+        if (form && (!form.getAttribute('enctype') || form.getAttribute('enctype') !== 'multipart/form-data')) {
+            console.log('Asegurando que el formulario tenga enctype="multipart/form-data"');
+            form.setAttribute('enctype', 'multipart/form-data');
+        }
+        
+        // Agregar campo oculto para rastrear índices si no existe
+        if (form && !document.getElementById('attachment-highest-index')) {
+            const indexTracker = document.createElement('input');
+            indexTracker.type = 'hidden';
+            indexTracker.name = 'attachment-highest-index';
+            indexTracker.id = 'attachment-highest-index';
+            indexTracker.value = '0';
+            form.appendChild(indexTracker);
+            console.log('Campo de índice de adjuntos añadido al formulario');
+        }
+        
+        // Configurar eventos para botones
+        document.getElementById('btn-feedback').addEventListener('click', function(e) {
+            document.getElementById('status-field').value = 'feedback';
+            // Validar que el campo de mensaje no esté vacío
+            if (!messageBody.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, escriba un mensaje de respuesta.');
+                messageBody.focus();
+            }
+        });
+        
+        document.getElementById('btn-solved').addEventListener('click', function(e) {
+            document.getElementById('status-field').value = 'solved';
+            // Validar que el campo de mensaje no esté vacío
+            if (!messageBody.value.trim()) {
+                e.preventDefault();
+                alert('Por favor, escriba un mensaje explicando la solución.');
+                messageBody.focus();
+            }
+        });
+        
+        document.getElementById('btn-closed').addEventListener('click', function() {
+            document.getElementById('status-field').value = 'closed';
+            // No requiere validación de mensaje
+        });
+    });
+    
+    // Actualizar el valor del índice más alto cuando se añade un nuevo adjunto
+    document.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.id === 'attachments-list') {
+            const indexTracker = document.getElementById('attachment-highest-index');
+            if (indexTracker && window.attachmentIndices.length > 0) {
+                const highestIndex = Math.max(...window.attachmentIndices);
+                indexTracker.value = highestIndex;
+                console.log(`Índice más alto actualizado a: ${highestIndex} después de añadir adjunto`);
+            }
+        }
+    });
+</script>
+
+{% endblock %}

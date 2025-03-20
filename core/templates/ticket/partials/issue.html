@@ -1,0 +1,12 @@
+<article id="issue-container">
+    <label>Incidencia:</label>
+    <div class="radio-button-group">
+        {% for issue in issues %}
+            {% component "radio-button" 
+                target="issue"
+                id=issue.pk
+                label=issue.name
+                next_target="ticket-details" / %}
+        {% endfor %}
+    </div>
+</article>

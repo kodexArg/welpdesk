@@ -1,0 +1,56 @@
+<div class="flex items-center justify-start">
+    <a href="{% url 'home' %}" 
+       class="flex items-center 
+              font-brand font-semibold 
+              text-4xl -tracking-0.5 
+              no-underline">
+        <div class="flex items-center">
+            <span class="text-white 
+                         hidden min-[30rem]:inline">Welp</span>
+            <div class="relative">
+                <i class="absolute 
+                          text-5xl fa fa-headset 
+                          text-sky-900 
+                          shadow-md blur-[0.4rem] 
+                          translate-x-[-0.05rem] translate-y-[0.05rem] 
+                          opacity-50"></i>
+                <i class="absolute 
+                          text-5xl fa fa-headset 
+                          text-sky-900 
+                          shadow-md blur-[0.2rem] 
+                          translate-x-[-0.05rem] translate-y-[0.05rem] 
+                          opacity-20"></i>
+                <i class="relative 
+                          text-5xl fa fa-headset 
+                          text-sky-200 
+                          shadow-md 
+                          translate-x-[0.05rem] translate-y-[-0.05rem]
+                          icon-glow"></i>
+                <style>
+                    @keyframes brief-glow {
+                        0%, 4%, 100% {
+                            filter: brightness(1);
+                            text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+                        }
+                        1% {
+                            filter: brightness(1.5);
+                            text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+                        }
+                    }
+                    
+                    .icon-glow {
+                        animation: brief-glow 30s ease-in-out infinite;
+                    }
+                    
+                    @media (prefers-reduced-motion: reduce) {
+                        .icon-glow {
+                            animation: none;
+                        }
+                    }
+                </style>
+            </div>
+            <span class="text-white 
+                         hidden min-[30rem]:inline">Desk</span>
+        </div>
+    </a> 
+</div>

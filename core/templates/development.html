@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+{% block title %}Playground de Componentes{% endblock %}
+
+{% block content %}
+<section class="py-8 px-4 mx-auto max-w-4xl">
+    <h1 class="text-5xl font-bold text-sky-700 text-center mb-8 font-title">Playground de Botones con Clases Personalizadas</h1>
+    
+    <div class="p-6 bg-sky-50 rounded-lg shadow-md mb-8">
+        <h2 class="text-3xl font-bold text-sky-700 text-center mb-6 font-title">Botones Primarios</h2>
+        <div class="flex flex-wrap gap-3 mb-6">
+            <button class="button-primary">Botón Primario</button>
+            <button class="button-primary" disabled>Primario Deshabilitado</button>
+            <button class="button-primary button-lg">Primario Grande</button>
+            <button class="button-primary button-sm">Primario Pequeño</button>
+        </div>
+        
+        <h2 class="text-3xl font-bold text-sky-700 text-center mb-6 font-title">Botones Secundarios</h2>
+        <div class="flex flex-wrap gap-3 mb-6">
+            <button class="button-secondary">Botón Secundario</button>
+            <button class="button-secondary" disabled>Secundario Deshabilitado</button>
+            <button class="button-secondary button-lg">Secundario Grande</button>
+            <button class="button-secondary button-sm">Secundario Pequeño</button>
+        </div>
+        
+        <h2 class="text-3xl font-bold text-sky-700 text-center mb-6 font-title">Botones de Éxito</h2>
+        <div class="flex flex-wrap gap-3 mb-6">
+            <button class="button-success">Botón Éxito</button>
+            <button class="button-success" disabled>Éxito Deshabilitado</button>
+        </div>
+        
+        <h2 class="text-3xl font-bold text-sky-700 text-center mb-6 font-title">Botones de Peligro</h2>
+        <div class="flex flex-wrap gap-3 mb-6">
+            <button class="button-danger">Botón Peligro</button>
+            <button class="button-danger" disabled>Peligro Deshabilitado</button>
+        </div>
+        
+        <h2 class="text-3xl font-bold text-sky-700 text-center mb-6 font-title">Botones de Cancelar</h2>
+        <div class="flex flex-wrap gap-3 mb-6">
+            <button class="button-cancel">Botón Cancelar</button>
+            <button class="button-cancel" disabled>Cancelar Deshabilitado</button>
+        </div>
+        
+        <h2 class="text-3xl font-bold text-sky-700 text-center mb-6 font-title">Botones con Borde</h2>
+        <div class="flex flex-wrap gap-3 mb-6">
+            <button class="button-outline-primary">Borde Primario</button>
+            <button class="button-outline-secondary">Borde Secundario</button>
+            <button class="button-outline-success">Borde Éxito</button>
+            <button class="button-outline-danger">Borde Peligro</button>
+        </div>
+        
+        <h2 class="text-3xl font-bold text-sky-700 text-center mb-6 font-title">Botones con Iconos</h2>
+        <div class="flex flex-wrap gap-3 mb-6">
+            <button class="button-primary button-icon">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+                </svg>
+                Guardar
+            </button>
+            <button class="button-danger button-icon">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+                Eliminar
+            </button>
+            <button class="button-cancel button-icon">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                Cancelar
+            </button>
+            <button class="button-success button-icon">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Confirmar
+            </button>
+        </div>
+
+        <h2 class="text-3xl font-bold text-sky-700 text-center mb-6 font-title">Botones con Borde e Iconos</h2>
+        <div class="flex flex-wrap gap-3 mb-6">
+            <button class="button-outline-primary button-icon">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+                Editar
+            </button>
+            <button class="button-outline-secondary button-icon">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                Descargar
+            </button>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,174 @@
+UDNs:
+  - name: "Km 1151"
+  - name: "Las Bóvedas"
+
+Sectors:
+  - name: "Full"
+    udns:
+      - "Km 1151"
+      - "Las Bóvedas"
+  - name: "Playa"
+    udns:
+      - "Km 1151"
+      - "Las Bóvedas"
+  - name: "Administración"
+    udns:
+      - "Km 1151"
+      - "Las Bóvedas"
+  - name: "Parador"
+    udns:
+      - "Km 1151"
+
+IssueCategories:
+  - name: "Sistema Debo"
+    sectors:
+      - "Full"
+      - "Playa"
+      - "Administración"
+  - name: "Sistema YPF"
+    sectors:
+      - "Playa"
+      - "Administración"
+  - name: "Solicitudes IT"
+    sectors:
+      - "Full"
+      - "Playa"
+      - "Administración"
+      - "Parador"
+  - name: "Seguridad"
+    sectors:
+      - "Full"
+      - "Playa"
+  - name: "Mantenimiento"
+    sectors:
+      - "Full"
+      - "Playa"
+      - "Administración"
+      - "Parador"
+  - name: "Compras"
+    sectors:
+      - "Full"
+      - "Playa"
+      - "Administración"
+      - "Parador"
+
+Issues:
+  - name: "Error crítico DEBO"
+    issue_category: "Sistema Debo"
+    description: "Error crítico que impide el uso completo del sistema DEBO. Se recomienda comunicarse inmediatamente con soporte técnico por teléfono además de generar este ticket."
+    display_name: "Error crítico en DEBO" 
+
+  - name: "Facturación"
+    issue_category: "Sistema Debo"
+    description: "Problemas específicos con el módulo de facturación de DEBO."
+    display_name: "Problemas con la facturación"
+
+  - name: "Despacho"
+    issue_category: "Sistema Debo"
+    description: "El sistema no muestra o no actualiza información de despachos de combustible. Indique si el problema es en todas las posiciones o en algunas específicas."
+    display_name: "No se muestran despachos"
+
+  - name: "Clover"
+    issue_category: "Sistema Debo"
+    description: "Problemas de conexión entre el dispositivo Clover y el sistema DEBO. Especifique el número de terminal Clover y la posición de caja donde está instalado."
+    display_name: "Clover desconectado"
+
+  - name: "Error crítico YPF"
+    issue_category: "Sistema YPF"
+    description: "Imposibilidad de operar o acceder a cualquiera de los sistemas YPF. Indique si hay mensajes de error específicos en pantalla."
+    display_name: "Error crítico en sistemas YPF"
+
+  - name: "Extranet"
+    issue_category: "Sistema YPF"
+    description: "Problemas específicos con el portal Extranet de YPF. Especifique si puede acceder pero no puede realizar operaciones, o si el acceso está completamente bloqueado."
+    display_name: "Problemas con Extranet"
+
+  - name: "YPF en ruta"
+    issue_category: "Sistema YPF"
+    description: "Problemas con el sistema de pago YPF en Ruta. Indique si el sistema está caído o si hay transacciones específicas que no pueden procesarse."
+    display_name: "Problemas con YPF en Ruta"
+
+  - name: "Postnet YPF"
+    issue_category: "Sistema YPF"
+    description: "Fallas en las terminales de pago para YPF en Ruta. Especifique el número de terminal y si muestra algún código de error."
+    display_name: "Falla en terminal Postnet YPF"
+
+  - name: "VOX"
+    issue_category: "Sistema YPF"
+    description: "Problemas con el sistema VOX."
+    display_name: "Problemas con sistema VOX" 
+
+  - name: "Pulseras"
+    issue_category: "Sistema YPF"
+    description: "Fallas en el sistema de pulseras. Especifique si es un problema con el lector o con pulseras específicas, indicando sus números de serie si es posible."
+    display_name: "Falla en sistema de pulseras"
+
+  - name: "Internet/WiFi"
+    issue_category: "Solicitudes IT"
+    description: "Problemas de conexión a Internet. Indique si la falla es total o intermitente, y qué servicios específicos no puede acceder."
+    display_name: "Problemas con Internet/WiFi"
+
+  - name: "Puntos de Venta"
+    issue_category: "Solicitudes IT"
+    description: "Problemas con la PC de punto de venta, como lentitud, fallos o errores específicos. Indique los síntomas exactos y desde cuándo ocurre el problema."
+    display_name: "Problemas con Punto de Venta"
+
+  - name: "Controladores"
+    issue_category: "Solicitudes IT"
+    description: "Problemas con dispositivos de pago o impresión fiscal que no estén relacionados con el sistema DEBO. Indique el modelo, número de serie y error específico."
+    display_name: "Problemas con controladores"
+
+  - name: "Recambio hardware"
+    issue_category: "Solicitudes IT"
+    description: "Solicitud de reemplazo de equipos informáticos. Detalle el equipo a reemplazar, motivo y urgencia de la solicitud."
+    display_name: "Solicitud recambio de hardware"
+
+  - name: "Telefonía"
+    issue_category: "Solicitudes IT"
+    description: "Problemas o solicitud de nuevos equipos. Especifique el tipo de problema, modelo del dispositivo (si aplica) y número de línea."
+    display_name: "Problemas con telefonía"
+
+  - name: "Soporte IT general"
+    issue_category: "Solicitudes IT"
+    description: "Otras solicitudes de soporte técnico no contempladas en las categorías anteriores. Sea específico sobre el problema o necesidad."
+    display_name: "Requerimiento para Soporte IT" 
+
+  - name: "Revisión grabaciones"
+    issue_category: "Seguridad"
+    description: "Solicitud para revisar grabaciones de cámaras de seguridad. Indique la fecha, hora, ubicación específica y motivo de la revisión."
+    display_name: "Requerimiento para revisar grabaciones"
+
+  - name: "Mantenimiento cámaras"
+    issue_category: "Seguridad"
+    description: "Solicitud de mantenimiento para el sistema de cámaras. Especifique si hay cámaras específicas con problemas, incluyendo ubicación y tipo de falla."
+    display_name: "Solicitud mantenimiento de cámaras"
+
+  - name: "Electricidad"
+    issue_category: "Mantenimiento"
+    description: "Problemas eléctricos como luces quemadas o tomacorrientes que no funcionan. Indique la ubicación exacta y el tipo de problema."
+    display_name: "Problemas con la electricidad"
+
+  - name: "Edilicio"
+    issue_category: "Mantenimiento"
+    description: "Problemas con la infraestructura como goteras, roturas en paredes o pisos, problemas de plomería, etc. Detalle la ubicación y la naturaleza del problema."
+    display_name: "Problemas edilicios" 
+
+  - name: "Insumos informáticos"
+    issue_category: "Compras"
+    description: "Solicitud de insumos para impresoras y sistemas. Especifique modelo de impresora, tipo y cantidad necesaria."
+    display_name: "Solicitud insumos informáticos"
+
+  - name: "Ordenanza"
+    issue_category: "Compras"
+    description: "Solicitud de elementos para mantenimiento y limpieza como productos de limpieza, herramientas, o materiales. Detalle cantidades."
+    display_name: "Solicitud insumos de ordenanza"
+
+  - name: "Librería"
+    issue_category: "Compras"
+    description: "Solicitud de artículos de oficina como papel, bolígrafos, carpetas, u otros materiales administrativos."
+    display_name: "Solicitud artículos de librería"
+
+  - name: "Otros"
+    issue_category: "Compras"
+    description: "Otras solicitudes de compra no contempladas en las categorías anteriores."
+    display_name: "Otras solicitudes de compra"

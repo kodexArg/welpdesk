@@ -1,0 +1,87 @@
+<!-- Modal de confirmación con Tailwind -->
+<div id="modal-{{ ticket.id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+  <div class="w-full max-w-md bg-white rounded-lg shadow-xl transform transition-all p-6 mx-4">
+    <!-- Encabezado del modal -->
+    <div class="mb-4">
+      <h3 class="text-lg font-semibold text-gray-800">Cerrar Ticket</h3>
+    </div>
+    
+    <!-- Contenido del modal -->
+    <div class="mb-6">
+      <p class="text-gray-600">¿Está seguro que desea cerrar este ticket?</p>
+    </div>
+    
+    <!-- Botones de acción -->
+    <div class="flex justify-end gap-3">
+      <button 
+        class="px-4 py-2 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+        data-action="cancel">
+        <i class="fa fa-times mr-1"></i>Cancelar
+      </button>
+      
+      <button 
+        class="px-4 py-2 rounded-full text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 transition-colors"
+        data-action="confirm"
+        hx-post="{% url 'close-ticket' ticket.id %}"
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+        hx-target="#ticket-{{ ticket.id }}"
+        hx-swap="outerHTML">
+        <i class="fa fa-check mr-1"></i>Confirmar
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const modalId = "modal-{{ ticket.id }}";
+    const modal = document.getElementById(modalId);
+    
+    // Bloquear scroll
+    document.body.style.overflow = 'hidden';
+    
+    // Función para cerrar el modal
+    function closeModal() {
+      if (modal) {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+        document.removeEventListener('keydown', handleEscKey);
+        document.body.removeEventListener('htmx:afterRequest', handleAfterRequest);
+      }
+    }
+    
+    // Manejador de tecla ESC
+    function handleEscKey(e) {
+      if (e.key === 'Escape') closeModal();
+    }
+    
+    // Manejador para eventos HTMX completados
+    function handleAfterRequest() {
+      setTimeout(closeModal, 200);
+    }
+    
+    // Eventos de clic en el modal
+    modal.addEventListener('click', function(e) {
+      // Cerrar al hacer clic en el fondo (fuera del contenido del modal)
+      if (e.target === modal) {
+        closeModal();
+      }
+      
+      // Cerrar al hacer clic en el botón cancelar
+      if (e.target.closest('[data-action="cancel"]')) {
+        closeModal();
+      }
+      
+      // Actualizar estado del botón confirmar cuando se hace clic
+      if (e.target.closest('[data-action="confirm"]')) {
+        const confirmBtn = e.target.closest('[data-action="confirm"]');
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<i class="fa fa-circle-notch fa-spin mr-1"></i>Procesando...';
+      }
+    });
+    
+    // Registrar eventos
+    document.addEventListener('keydown', handleEscKey);
+    document.body.addEventListener('htmx:afterRequest', handleAfterRequest);
+  })();
+</script>

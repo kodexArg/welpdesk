@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block title %}WelpDesk - Inicio{% endblock %}
+
+{% block content %}
+    <section>
+        <h1>Bienvenido</h1>
+
+        <article id="welcome" class="text-center">
+            <p class="text-justify">
+                <span class="font-brand text-xl font-bold">Welp<i class="fa fa-headset"></i>Desk</span> es un sistema integral de mesa de ayuda diseñado para optimizar la comunicación entre departamentos en entornos empresariales con múltiples Unidades de Negocio (UDNs).
+            </p>
+            <p class="text-justify">
+                Esta plataforma permite que los equipos de administración, operaciones y soporte coordinen la recepción y resolución de incidencias, mientras que las áreas operativas y de atención al público reportan novedades, solicitan asistencia o gestionan pedidos en el sistema.
+            </p>
+        </article>
+            
+        <article id="features">
+            <h4>Funcionalidades principales</h4>
+            <ul class="flex flex-col gap-3 list-none pl-0 my-3">
+                <li class="flex items-center py-1">
+                    <i class="fa fa-hand-pointer fa-lg text-earth-500 mr-3 min-w-6 text-center text-lg"></i> 
+                    <span class="leading-relaxed">Reportes simplificados con categorización por sector, tipo de incidencia: incidencias tipificadas pueden ser informadas sin escribir una palabra.</span>
+                </li>
+                <li class="flex items-center py-1">
+                    <i class="fa fa-tools fa-lg text-earth-500 mr-3 min-w-6 text-center text-lg"></i> 
+                    <span class="leading-relaxed">Gestión de mantenimientos preventivos y correctivos con seguimiento técnico</span>
+                </li>
+                <li class="flex items-center py-1">
+                    <i class="fa fa-chart-bar fa-lg text-earth-500 mr-3 min-w-6 text-center text-lg"></i> 
+                    <span class="leading-relaxed">Análisis estadístico detallado para toma de decisiones</span>
+                </li>
+                <li class="flex items-center py-1">
+                    <i class="fa fa-user-check fa-lg text-earth-500 mr-3 min-w-6 text-center text-lg"></i> 
+                    <span class="leading-relaxed">Registro completo de todas las acciones en logs e históricos para auditoría y trazabilidad</span>
+                </li>
+                <li class="flex items-center py-1">
+                    <i class="fa fa-shopping-cart fa-lg text-earth-500 mr-3 min-w-6 text-center text-lg"></i> 
+                    <span class="leading-relaxed">Gestión integral del ciclo de compras con workflow de aprobaciones, seguimiento y verificación <small class="text-xs text-gray-500 font-normal pl-1"><i class="fa fa-tools text-xs text-gray-500 m-0 p-0"></i> En desarrollo</small></span>
+                </li>
+                <li class="flex items-center py-1">
+                    <i class="fa fa-comments fa-lg text-earth-500 mr-3 min-w-6 text-center text-lg"></i> 
+                    <span class="leading-relaxed">Sistema de comunicación integrado en cada ticket, con soporte para grandes archivos y seguimiento de resolución de problemas.</span>
+                </li>
+            </ul>
+        </article>
+            
+        <article id="cards">
+            <h4>Diseñado para</h4>
+            <div class="roles-container">
+                <div class="role-card bg-green-50">
+                    <i class="fa fa-users fa-2x text-green-400"></i>
+                    <h5 class="text-earth-700">Personal de Operación</h5>
+                    <ul>
+                        <li><i class="fa fa-flag"></i> Reporta incidencias</li>
+                        <li><i class="fa fa-paperclip"></i> Aporta documentación</li>
+                        <li><i class="fa fa-cart-plus"></i> Solicita insumos</li>
+                        <li><i class="fa fa-check"></i> Verifica soluciones</li>
+                    </ul>
+                </div>
+                <div class="role-card bg-indigo-50">
+                    <i class="fa fa-user-tie fa-2x text-indigo-400"></i>
+                    <h5 class="text-earth-700">Líderes de UDN</h5>
+                    <ul>
+                        <li><i class="fa fa-list-alt"></i> Auditoría continua</li>
+                        <li><i class="fa fa-chart-line"></i> Estadísticas</li>
+                        <li><i class="fa fa-stamp"></i> Aprobaciones</li>
+                    </ul>
+                </div>
+                <div class="role-card bg-orange-50">
+                    <i class="fa fa-hard-hat fa-2x text-orange-400"></i>
+                    <h5 class="text-earth-700">Personal Técnico</h5>
+                    <ul>
+                        <li><i class="fa fa-wrench"></i> Resuelve incidencias</li>
+                        <li><i class="fa fa-tools"></i> Informa mantenimiento</li>
+                    </ul>
+                </div>
+            </div>
+        </article>
+            
+        <article id="closing">
+            <p>Estamos trabajando para adaptar cada funcionalidad a las necesidades específicas de tu organización.</p>
+        </article>
+    </section>
+{% endblock %}

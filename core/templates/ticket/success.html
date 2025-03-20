@@ -1,0 +1,104 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}WelpDesk - Ticket Creado Exitosamente{% endblock %}
+
+{% block content %}
+<section>
+    <div class="flex items-center justify-center">
+        <div class="inline-flex items-center bg-sky-50 px-4 py-2 rounded-full">
+            <i class="fas fa-clock text-sky-700 mr-2"></i>
+            <p id="redirect-message" class="text-sm text-sky-700 m-0 font-medium">
+                Redirigiendo en <span id="countdown" class="font-bold">30</span> segundos
+            </p>
+        </div>
+    </div>
+    
+    <h1 class="mt-2">¡Ticket creado exitosamente!</h1>
+
+    <article>
+        <div class="border-b border-sky-200 pb-4 mb-4">
+            <h2 class="text-left">#{{ ticket.id }} - {% if ticket.title %}{{ ticket.title }}{% else %}{{ ticket.issue.name }}{% endif %}</h2>
+        </div>
+        
+        <div class="mb-6">
+            <div class="flex flex-wrap items-center mb-4">
+                <span class="font-semibold text-sky-800 mr-2">Incidencia reportada:</span>
+                <span class="text-sky-900">{{ ticket.issue.name }}</span>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 mb-4">
+                <span class="tag tag-udn">{{ ticket.udn.name }}</span>
+                <span class="tag tag-sector">{{ ticket.sector.name }}</span>
+                <span class="tag tag-category">{{ ticket.issue_category.name }}</span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-status-open-bg text-status-open-text border border-status-open-border">
+                    <i class="fas fa-circle-notch mr-1"></i> Abierto
+                </span>
+            </div>
+        </div>
+        
+        <blockquote class="bg-sky-50 border-l-4 border-sky-700 p-4 rounded-r-md mb-6">
+            <p class="text-sky-800 m-0">El ticket ha sido registrado correctamente.</p>
+        </blockquote>
+    </article>
+    
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+            {% component "button" 
+                label="Ver lista de tickets" 
+                action="{% url 'ticket-list' %}" 
+                color="button-primary"
+                icon="fas fa-list-ul"
+            / %}
+            
+            {% component "button" 
+                label="Crear otro ticket" 
+                action="{% url 'create-ticket' %}" 
+                color="button-secondary"
+                icon="fas fa-plus"
+            / %}
+        </div>
+    
+</section>
+{% endblock %}
+
+{% block styles %}
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    .fa-thumbs-up {
+        animation: pulse 2s infinite;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let seconds = 30;
+        const countdownElement = document.getElementById('countdown');
+        
+        const interval = setInterval(function() {
+            seconds--;
+            countdownElement.textContent = seconds;
+            
+            if (seconds <= 0) {
+                clearInterval(interval);
+                window.location.href = "{% url 'ticket-list' %}";
+            }
+        }, 1000);
+    });
+</script>
+{% endblock %}

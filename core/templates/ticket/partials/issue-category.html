@@ -1,0 +1,13 @@
+<article id="issue-category-container">
+    <label>Categoría:</label>
+    <div class="radio-button-group">
+        {% for issue_category in issue_categories %}
+            {% component "radio-button"
+                target="issue_category"
+                id=issue_category.pk
+                label=issue_category.name
+                next_target="issue" / %}
+        {% endfor %}
+    </div>
+</article>
+

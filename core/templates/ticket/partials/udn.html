@@ -1,0 +1,16 @@
+<article id="udn-container">
+    <label>UDN:</label>
+    <div class="radio-button-group">
+        {% if udns %}
+            {% for udn in udns %}
+                {% component "radio-button"
+                    target="udn"
+                    next_target="sector"
+                    id=udn.pk
+                    label=udn.name / %}
+            {% endfor %}
+        {% else %}
+            <p class="no-udns-message">No tienes UDNs asignadas.</p>
+        {% endif %}
+    </div>
+</article>

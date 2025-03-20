@@ -1,0 +1,42 @@
+{% load static %}
+{% load django_vite %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}WelpDesk{% endblock %}</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+
+    {% vite_hmr_client %}
+    {% vite_asset 'core/static/js/main.js' %}
+
+    <meta name="htmx-config" content='{"headers": {"X-CSRFToken": "{{ csrf_token }}"}}'>
+
+    
+    {% component_css_dependencies %}
+    {% block styles %}{% endblock %}
+</head>
+
+<body>
+    <header>
+        {% include "navbar.html" %}
+    </header>
+    
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        {% block footer %}{% endblock %}
+    </footer>
+
+    {% django_browser_reload_script %}
+    {% component_js_dependencies %}
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

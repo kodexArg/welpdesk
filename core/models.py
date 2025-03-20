@@ -1,0 +1,122 @@
+from django.db import models
+from django.contrib.auth.models import User, Group
+from django.urls import reverse
+
+
+class UDN(models.Model):
+    name = models.CharField(max_length=255, verbose_name="Nombre")
+    permission_group = models.ManyToManyField(Group, blank=True, related_name="udn_permissions", verbose_name="Grupos de Permisos")
+    groups = models.ManyToManyField(Group, related_name='udns', blank=True)
+
+    class Meta:
+        verbose_name = "UDN"
+        verbose_name_plural = "UDNs"
+
+    def __str__(self):
+        return self.name
+
+
+class Sector(models.Model):
+    udn = models.ManyToManyField(UDN, related_name="sectors", verbose_name="UDNs")
+    name = models.CharField(max_length=255, verbose_name="Nombre")
+    permission_group = models.ManyToManyField(Group, blank=True, related_name="sector_permissions", verbose_name="Grupos de Permisos")
+    groups = models.ManyToManyField(Group, related_name='sectors_groups', blank=True)
+
+    class Meta:
+        verbose_name = "Sector"
+        verbose_name_plural = "Sectores"
+
+    def __str__(self):
+        return self.name
+
+
+class IssueCategory(models.Model):
+    name = models.CharField(max_length=255, verbose_name="Nombre")
+    sector = models.ManyToManyField("Sector", related_name="issue_categories", verbose_name="Sectores")
+    permission_group = models.ManyToManyField(Group, blank=True, related_name="category_permissions", verbose_name="Grupos de Permisos")
+
+    class Meta:
+        verbose_name = "Categoría"
+        verbose_name_plural = "Categorías"
+
+    def __str__(self):
+        return self.name
+
+
+class Issue(models.Model):
+    issue_category = models.ForeignKey(IssueCategory, on_delete=models.CASCADE, related_name="issues", verbose_name="Categoría")
+    name = models.CharField(max_length=255, verbose_name="Nombre")
+    display_name = models.CharField(max_length=255, verbose_name="Nombre a Mostrar", blank=True, null=True)
+    description = models.TextField(blank=True, null=True, verbose_name="Descripción")
+    permission_group = models.ManyToManyField(Group, blank=True, related_name="issue_permissions", verbose_name="Grupos de Permisos")
+
+    class Meta:
+        verbose_name = "Incidencia"
+        verbose_name_plural = "Incidencias"
+
+    def __str__(self):
+        return self.name
+
+
+class Ticket(models.Model):
+    udn = models.ForeignKey(UDN, on_delete=models.CASCADE, verbose_name="UDN")
+    sector = models.ForeignKey(Sector, on_delete=models.CASCADE, verbose_name="Sector")
+    issue_category = models.ForeignKey(IssueCategory, on_delete=models.CASCADE, verbose_name="Categoría")
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name="Incidencia")
+
+    class Meta:
+        verbose_name = "Ticket"
+        verbose_name_plural = "Tickets"
+
+    def __str__(self):
+        return self.issue.name
+
+    def get_absolute_url(self):
+        """Devuelve la URL para ver los detalles del ticket"""
+        return reverse('ticket-view', kwargs={'ticket_id': self.id})
+
+    def get_close_url(self):
+        """Devuelve la URL para el endpoint de confirmación de cierre del ticket"""
+        return reverse('htmx-confirm-close', kwargs={'ticket_id': self.id})
+
+
+class Message(models.Model):
+    STATUS_CHOICES = [
+        ('open', 'Abierto'),
+        ('solved', 'Solucionado'),
+        ('closed', 'Cerrado'),
+        ('feedback', 'Comentario'),
+    ]
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="messages", verbose_name="Ticket")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open', verbose_name="Estado")
+    reported_on = models.DateTimeField(null=True, blank=True, verbose_name="Fecha Reportada")
+    created_on = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="messages", verbose_name="Usuario")
+    body = models.TextField(verbose_name="Cuerpo del Mensaje", blank=True, null=True)
+
+
+    class Meta:
+        verbose_name = "Mensaje"
+        verbose_name_plural = "Mensajes"
+        ordering = ['created_on']
+
+    def __str__(self):
+        return f"Mensaje de {self.user.username} en {self.ticket.issue.name}"
+
+    def save(self, *args, **kwargs):
+        if self.reported_on is None:
+          self.reported_on = self.created_on
+        super().save(*args, **kwargs)
+
+
+class Attachment(models.Model):
+    file = models.FileField(upload_to="attachments/", verbose_name="Archivo")
+    filename = models.CharField(max_length=255, verbose_name="Nombre del Archivo")
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name="attachments", verbose_name="Mensaje", blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Adjunto"
+        verbose_name_plural = "Adjuntos"
+
+    def __str__(self):
+        return self.filename

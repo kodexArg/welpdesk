@@ -1,0 +1,36 @@
+{
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.14",
+    "htmx.org": "^1.9.12",
+    "tailwindcss": "^4.0.14",
+    "vite": "^6.2.2"
+  },
+  "name": "welpdesk",
+  "version": "1.0.0",
+  "description": "Sistema de ticketing para mesa de ayuda basado en Django 5. Altamente configurable y fácil de personalizar para adaptarse a las necesidades específicas de cualquier organización.",
+  "main": "index.js",
+  "dependencies": {
+    "detect-libc": "^2.0.3",
+    "enhanced-resolve": "^5.18.1",
+    "esbuild": "^0.25.1",
+    "graceful-fs": "^4.2.11",
+    "jiti": "^2.4.2",
+    "lightningcss": "^1.29.2",
+    "lightningcss-win32-x64-msvc": "^1.29.2",
+    "nanoid": "^3.3.11",
+    "picocolors": "^1.1.1",
+    "postcss": "^8.5.3",
+    "rollup": "^4.36.0",
+    "source-map-js": "^1.2.1",
+    "tapable": "^2.2.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite --port 3000",
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
