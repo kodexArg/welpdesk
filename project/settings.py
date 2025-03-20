@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 LOG_DIR = BASE_DIR / 'logs'
 
 logger.add(
-    LOG_DIR / 'dj5_helpdesk_{time:YYYY-MM-DD}.log',
+    LOG_DIR / 'welpdesk_{time:YYYY-MM-DD}.log',
     rotation='00:00',
     retention='60 days',
     level='DEBUG',
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'django_components',
+    'django_vite',
 ]
 
 COMPONENTS = ComponentsSettings(
@@ -75,7 +76,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_browser_reload.middleware.BrowserReloadMiddleware',
     'django_components.middleware.ComponentDependencyMiddleware',
 
 ]
@@ -116,12 +116,12 @@ IS_RUNSERVER = any('runserver' in arg for arg in sys.argv)
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ['DB_ENGINE'],
-        'NAME': os.environ['DB_NAME'],
-        'USER': os.environ['DB_USER'],
-        'PASSWORD': os.environ['DB_PASSWORD'],
-        'HOST': 'localhost' if IS_RUNSERVER else os.environ['DB_HOST'],
-        'PORT': os.environ.get('DB_PORT', '5432'), 
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ['POSTGRES_DB'],
+        'USER': os.environ['POSTGRES_USER'],
+        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+        'HOST': os.environ['POSTGRES_HOST'],
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'), 
     }
 }
 
@@ -147,11 +147,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = 'docker/volumes/mediafiles' 
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
-STATIC_ROOT = os.environ['STATIC_ROOT']
-STATIC_ROOT = os.environ.get('STATIC_ROOT', 'configs/volumes/staticfiles')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.environ.get('MEDIA_ROOT', 'configs/volumes/mediafiles')
+MEDIA_ROOT = BASE_DIR / 'mediafiles'
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'core', 'static'),]
 STATICFILES_FINDERS = [
@@ -167,3 +166,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'  
 LOGOUT_REDIRECT_URL = '/accounts/logout/' 
 LOGIN_URL = '/accounts/login/'
+
+DJANGO_VITE_DEV_MODE = True
+DJANGO_VITE_ASSETS_PATH = BASE_DIR / 'assets'
+DJANGO_VITE_DEV_SERVER_PORT = 3000

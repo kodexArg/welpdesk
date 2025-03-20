@@ -13,11 +13,6 @@ urlpatterns = [
     path('logout_page/', TemplateView.as_view(template_name='registration/logout.html'), name='logout_page'),
 ]
 
-# Django Browser Reload (DEBUG)
-urlpatterns += [
-    path("__reload__/", include("django_browser_reload.urls")),
-]
-
 
 # Add URL patterns for serving static and media files during development
 if settings.DEBUG:
