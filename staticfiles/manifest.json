@@ -1,0 +1,11 @@
+{
+  "core/static/js/main.js": {
+    "file": "assets/main-CRaKk2Ii.js",
+    "name": "main",
+    "src": "core/static/js/main.js",
+    "isEntry": true,
+    "css": [
+      "assets/main--tgjmRp6.css"
+    ]
+  }
+}

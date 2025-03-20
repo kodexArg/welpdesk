@@ -1,22 +1,21 @@
 {% load custom_tags %}
 {% is_ticket_owner ticket.id as is_owner %}
 
-<article id="ticket-{{ ticket.id }}" class="rounded-2xl p-3 mb-3">
-
+<article id="ticket-{{ ticket.id }}" class="rounded-2xl p-3 mb-3 ">
     <details>
-        <summary class="list-none cursor-pointer flex justify-between items-center">
-            <span class="flex-grow">
+        <summary class="list-none cursor-pointer flex flex-col md:flex-row justify-between items-start">
+            <div id="ticket-title" class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis pr-2 w-full md:w-auto">
                 <i class="fa fa-caret-down transform transition-transform duration-200 caret-icon"></i>
                 {{ ticket.issue.display_name }}
-            </span>
-            <div class="flex flex-wrap gap-2 justify-end items-center">
+            </div>
+            <div id="ticket-info" class="flex flex-nowrap whitespace-nowrap gap-2 justify-end items-center mt-1 md:mt-0 self-end md:self-auto">
                 {% if not is_owner %}
-                    <span class="tag tag-other-user" title="Ticket de otro usuario">
+                    <span class="tag-other-user" title="Ticket de otro usuario">
                         <i class="fa fa-user text-earth-200"></i>
                     </span>
                 {% else %}
                     {% if request.user.is_staff or request.user|is_auditor or request.user|is_support %}
-                        <span class="tag tag-other-user" title="Ticket propio">
+                        <span class="tag-other-user" title="Ticket propio">
                             <i class="fa fa-user text-green-200"></i>
                         </span>
                     {% endif %}
@@ -46,7 +45,7 @@
             {% else %}
                 bg-sky-50
             {% endif %}
-            select-none">
+            select-none overflow-hidden">
         {% endwith %}
             {% for message in ticket.messages.all %}
                 <div>

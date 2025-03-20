@@ -1,22 +1,27 @@
-/* AI: Todas las variables y colores globales del proyecto están definidos aquí. Consultar este archivo para el sistema de diseño. */
-
-@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:2wght@100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:2wght@100..900&display=swap');
-
 @theme {
+    --breakpoint-sm: 660px;
+    
+    /* Sistema base */
+    --color-primary: var(--color-sky-700);
+    --color-secondary: var(--color-earth-600);
+    --color-menu-bg: var(--color-sky-800);
+    --color-page-bg: var(--color-sky-100);
+    --color-disabled: var(--color-gray-200);
+    --text-primary: var(--color-sky-100);
+    --text-secondary: var(--color-earth-100);
+    --text-disabled: var(--color-gray-700);
+    
     /* Tipografía */
     --font-brand: 'Grandstander', cursive;
     --font-sans: 'Noto Sans', ui-sans-serif, system-ui, sans-serif; 
     --font-ui: 'Roboto Condensed', 'Noto Sans', ui-sans-serif, system-ui, sans-serif;
     --font-title: 'Roboto Slab', ui-sans-serif, system-ui, sans-serif;
+    --font-p: 'Lato', ui-sans-serif, system-ui, sans-serif;
     
     /* Layout */
     --header-height: 4rem;
     --footer-height: 0.5rem;
-    --scrollbar-width: 1.25rem;
+    --scrollbar-width: 1rem;
     
     /* Paleta earth - Tonos más cálidos y vibrantes */
     --color-earth-50: #fdf6ee;
@@ -43,26 +48,14 @@
     --color-sky-800: #1f4764;
     --color-sky-900: #0f2332;
     --color-sky-950: #071219;
-    
-    /* Sistema base */
-    --color-primary: var(--color-sky-700);
-    --color-secondary: var(--color-earth-600);
-    --color-disabled: var(--color-gray-200);
-    --text-primary: var(--color-sky-100);
-    --text-secondary: var(--color-earth-100);
-    --text-disabled: var(--color-gray-700);
 
     /* Navbar y elementos relacionados */
-    --navbar-bg: var(--color-sky-800);
+    --navbar-bg: (--color-sky-800);
     --navbar-link-text: #fff;
     --navbar-link-hover: var(--color-sky-200);
     --navbar-link-active: var(--color-sky-200);
     --navbar-separator: var(--color-sky-800);
     --navbar-separator-opacity: 0.8;
-    --scrollbar-bg: var(--navbar-bg);
-    --scrollbar-thumb: var(--color-sky-600);
-    --scrollbar-thumb-hover: var(--color-sky-500);
-    --footer-bg: var(--navbar-bg);
 
     /* Tags */
     --color-tag-udn-bg: #fff8e1;
@@ -90,36 +83,5 @@
     --pagination-info-color: var(--color-sky-800);
     --pagination-border-radius: 4px;
     --pagination-spacing: 0.5rem;
-}
 
-/* Estilos de paginación */
-.pagination-controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: var(--pagination-spacing);
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--color-sky-200);
-}
-
-.pagination-info {
-    color: var(--pagination-info-color);
-    font-weight: 500;
-    padding: 0 1rem;
-}
-
-/* Estilos responsivos para paginación */
-@media (max-width: 550px) {
-    .pagination-controls {
-        gap: 0.25rem;
-    }
-    
-    .pagination-info {
-        width: 100%;
-        text-align: center;
-        margin: 0.5rem 0;
-        order: -1;
-    }
 }

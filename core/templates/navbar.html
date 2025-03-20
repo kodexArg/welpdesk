@@ -1,4 +1,4 @@
-<nav class="flex justify-between items-center px-4 py-2 bg-[var(--navbar-bg)] shadow-md">
+<nav>
     {% component "brand-logo" / %}
     
     <div class="flex items-center space-x-1">
@@ -11,7 +11,7 @@
             {% component "separator" / %}
             {% component "logout" / %}
         {% else %}
-            {% component "nav-link" link="login" icon="fa fa-sign-in" label="INGRESAR" always_show_label=True current_view=request.resolver_match.view_name / %}
+            {% component "nav-link" link="login" icon="fa fa-sign-in" label="INGRESAR" current_view=request.resolver_match.view_name / %}
         {% endif %}
     </div>
 </nav>

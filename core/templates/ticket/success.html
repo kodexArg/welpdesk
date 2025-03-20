@@ -38,23 +38,35 @@
         </div>
         
         <blockquote class="bg-sky-50 border-l-4 border-sky-700 p-4 rounded-r-md mb-6">
-            <p class="text-sky-800 m-0">El ticket ha sido registrado correctamente.</p>
+            <p>
+                {% if ticket.issue %}
+                    {{ ticket.issue }}
+                {% else %}
+                    No hay descripción
+                {% endif %}
+            </p>
+            
+            {% if ticket.messages.first.reported_on %}
+            <p class="mt-4 text-sm text-sky-700 font-medium">
+                <i class="far fa-calendar-alt mr-1"></i> Este ticket tiene una fecha registrada: {{ ticket.messages.first.reported_on|date:"l d \d\e F \d\e Y, H:i" }}
+            </p>
+            {% endif %}
         </blockquote>
+            <p class="text-green-700 font-stretch-expanded italic">El ticket ha sido registrado correctamente.</p>
     </article>
     
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
             {% component "button" 
-                label="Ver lista de tickets" 
+                label="CREAR OTRO TICKET" 
+                action="{% url 'create-ticket' %}" 
+                color="button-primary"
+                icon="fas fa-plus"
+            / %}
+            {% component "button" 
+                label="LISTA DE TICKETS" 
                 action="{% url 'ticket-list' %}" 
                 color="button-primary"
                 icon="fas fa-list-ul"
-            / %}
-            
-            {% component "button" 
-                label="Crear otro ticket" 
-                action="{% url 'create-ticket' %}" 
-                color="button-secondary"
-                icon="fas fa-plus"
             / %}
         </div>
     

@@ -3,8 +3,8 @@
 
 {% block title %}WelpDesk - Crear Ticket{% endblock %}
 
-
 {% block content %}
+
 <section>
     <form method="post" enctype="multipart/form-data" hx-target="this" hx-swap="outerHTML" id="ticket-form">
 
@@ -31,21 +31,21 @@
         </article>
 
         <!-- Botones -->
-        <article id="button-container" class="mt-4 w-full">
-            <div class="grid grid-cols-2 gap-4 w-full">
-                {% component "button" 
-                    label="CREAR TICKET" 
-                    id="create-ticket-button" 
-                    disabled=True 
-                / %}
-                {% component "button" 
-                    label="CANCELAR" 
-                    action="{% url 'home' %}" 
-                    cancel=True
-                    icon="fas fa-times"
-                / %}
-            </div>
-        </article>
+        <div class="grid grid-cols-2 gap-4 w-full">
+            {% component "button" 
+                label="CREAR TICKET" 
+                id="create-ticket-button" 
+                disabled=True 
+                color="button-success"
+            / %}
+            {% component "button" 
+                label="CANCELAR" 
+                action="{% url 'home' %}" 
+                cancel=True
+                icon="fas fa-times"
+                color="button-cancel"
+            / %}
+        </div>
         
         <!-- Contenedor para errores -->
         <div id="form-error">
@@ -58,30 +58,8 @@
                 </ul>
             {% endif %}
         </div>
-        
-        <!-- Espacio adicional para evitar que el footer suba demasiado -->
-        <div class="form-footer-space"></div>
     </form>
 </section>
-{% endblock %}
-
-{% block styles %}
-<style>
-    .hidden-container {
-        display: none;
-    }
-    
-    /* Espacio adicional para separar el contenido del footer */
-    .form-footer-space {
-        @apply h-20 w-full;
-    }
-    
-    /* Asegurarse de que el contenido tenga suficiente espacio al final */
-    #ticket-form {
-        @apply mb-8 pb-8;
-    }
-
-</style>
 {% endblock %}
 
 {% block scripts %}
@@ -131,10 +109,22 @@
      */
     document.addEventListener('click', function(e) {
         if (e.target.matches('input[type="radio"]')) {
-            const containerId = e.target.name === 'udn' ? 'udn-container' : 
-                              e.target.name === 'sector' ? 'sector-container' :
-                              e.target.name === 'issue_category' ? 'issue-category-container' :
-                              e.target.name === 'issue' ? 'issue-container' : null;
+            let containerId = null;
+            
+            switch (e.target.name) {
+                case 'udn':
+                    containerId = 'udn-container';
+                    break;
+                case 'sector':
+                    containerId = 'sector-container';
+                    break;
+                case 'issue_category':
+                    containerId = 'issue-category-container';
+                    break;
+                case 'issue':
+                    containerId = 'issue-container';
+                    break;
+            }
             
             if (containerId) {
                 const container = document.getElementById(containerId);
@@ -144,12 +134,18 @@
             }
         }
         
-        if (e.target.matches('input[name="udn"]')) {
-            resetSubsequentSections('udn-container');
-        } else if (e.target.matches('input[name="sector"]')) {
-            resetSubsequentSections('sector-container');
-        } else if (e.target.matches('input[name="issue_category"]')) {
-            resetSubsequentSections('issue-category-container');
+        if (e.target.matches('input[type="radio"]')) {
+            switch (e.target.name) {
+                case 'udn':
+                    resetSubsequentSections('udn-container');
+                    break;
+                case 'sector':
+                    resetSubsequentSections('sector-container');
+                    break;
+                case 'issue_category':
+                    resetSubsequentSections('issue-category-container');
+                    break;
+            }
         }
     });
     
@@ -162,7 +158,8 @@
             const createButton = document.getElementById('create-ticket-button');
             if (createButton) {
                 createButton.disabled = false;
-                createButton.classList.add('create-button-enabled');
+                createButton.classList.remove('cursor-not-allowed');
+                createButton.classList.add('button-success');
             }
             
             if (typeof initializeAttachments === 'function') {

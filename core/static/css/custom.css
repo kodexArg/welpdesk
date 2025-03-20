@@ -1,28 +1,81 @@
-/* AI: Este archivo contiene estilos personalizados. Los colores y variables globales están en theme.css */
-
 @layer components {
+    .hidden-container {
+        @apply hidden;
+    }
+
+    /* Botones */
     .radio-button-group {
         @apply flex flex-wrap w-full gap-x-3 gap-y-1.5;
     }
 
+    .button-primary {
+        @apply text-sky-900 transition-all duration-200;
+        @apply hover:scale-[1.03] hover:brightness-110;
+        @apply active:scale-95;
+    }
+    .button-disabled {
+        @apply text-zinc-500;
+        @apply cursor-not-allowed;
+    }
+    .button-secondary {
+        @apply text-earth-600 transition-all duration-200;
+        @apply hover:scale-[1.03] hover:brightness-110;
+        @apply active:scale-95;
+    }
+    .button-cancel {
+        @apply text-earth-700  transition-all duration-200;
+        @apply hover:scale-[1.03] hover:brightness-110 ;
+        @apply active:scale-95;
+    }
+    
+    .button-success {
+        @apply text-green-900 transition-all duration-200;
+        @apply hover:scale-[1.03] hover:brightness-110;
+        @apply active:scale-95;
+    }
+    
+    .button-success[disabled] {
+        @apply text-zinc-500;
+        @apply cursor-not-allowed;
+        @apply hover:scale-100 hover:brightness-100;
+        @apply active:scale-100;
+    }
+    
+    .button-danger {
+        @apply text-red-600 transition-all duration-200;
+        @apply hover:scale-[1.03] hover:brightness-110;
+        @apply active:scale-95;
+    }
+    
+
+
+    /* Tags */
     .tag {
-        @apply inline-flex items-center justify-center font-ui text-xs font-medium py-1 px-2 rounded-full leading-none whitespace-nowrap;
+        @apply font-ui text-xs font-medium py-1 px-2 rounded-full leading-none whitespace-nowrap border-2;
     }
 
     .tag-udn {
-        @apply bg-[var(--color-tag-udn-bg)] text-[var(--color-tag-udn-text)] border border-[var(--color-tag-udn-border)];
+        @apply bg-[var(--color-tag-udn-bg)] text-[var(--color-tag-udn-text)] border-[var(--color-tag-udn-border)];
     }
 
     .tag-sector {
-        @apply bg-[var(--color-tag-sector-bg)] text-[var(--color-tag-sector-text)] border border-[var(--color-tag-sector-border)];
+        @apply bg-[var(--color-tag-sector-bg)] text-[var(--color-tag-sector-text)] border-[var(--color-tag-sector-border)];
     }
 
     .tag-category {
-        @apply bg-[var(--color-tag-category-bg)] text-[var(--color-tag-category-text)] border border-[var(--color-tag-category-border)];
+        @apply bg-[var(--color-tag-category-bg)] text-[var(--color-tag-category-text)] border-[var(--color-tag-category-border)];
+    }
+
+    .tag-unpressed {
+        @apply shadow-md brightness-100 no-underline;
+    }
+    
+    .tag-pressed {    
+        @apply shadow-inner brightness-110 underline;
     }
 
     .status {
-        @apply inline-flex items-center justify-center font-ui text-xs font-medium py-1 px-3 rounded-full leading-none whitespace-nowrap;
+        @apply inline-flex items-center justify-center font-ui text-xs font-medium py-1 px-2 gap-x-1 rounded-full leading-none whitespace-nowrap border-2;
     }
 
     .status-open {
@@ -41,79 +94,4 @@
         @apply bg-[#e3f2fd] text-[#2e6996] border border-[#bbdefb];
     }
 
-    /* Estilos para tarjetas de roles */
-    #cards .roles-container {
-        display: grid;
-        grid-template-columns: repeat(1, minmax(0, 1fr));
-        gap: 1.5rem;
-    }
-
-    @media (min-width: 768px) {
-        #cards .roles-container {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-    }
-
-    #cards .role-card {
-        background-color: white;
-        padding: 1.25rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        border: 1px solid var(--color-sky-200);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    #cards .role-card i.fa-2x {
-        margin-bottom: 0.75rem;
-        color: var(--color-earth-600);
-    }
-
-    #cards .role-card ul {
-        list-style: none;
-        padding-left: 0;
-        text-align: left;
-        width: 100%;
-        margin-top: 0.75rem;
-    }
-
-    #cards .role-card ul > * + * {
-        margin-top: 0.5rem;
-    }
-
-    #cards .role-card li {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    #cards .role-card li i {
-        color: var(--color-earth-500);
-        font-size: 0.875rem;
-    }
-
-    #closing {
-        text-align: center;
-        background-color: var(--color-sky-50);
-        border: 1px solid var(--color-sky-200);
-    }
-
-    /* Los demás estilos específicos para la página de inicio se mantienen en home.html */
-}
-
-@layer utilities {
-    /* Clases de utilidad para fuentes */
-    .font-brand {
-        font-family: var(--font-brand);
-    }
-    
-    .font-sans {
-        font-family: var(--font-sans);
-    }
-    
-    .font-ui {
-        font-family: var(--font-ui);
-    }
 }

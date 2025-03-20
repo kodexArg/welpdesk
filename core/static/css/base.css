@@ -1,148 +1,38 @@
 /* AI: Este archivo contiene estilos base. Los colores y variables globales están en theme.css */
 
 @layer components {
+    /* Estilos base del layout */
     body {
-        @apply flex flex-col h-screen max-h-screen overflow-hidden font-sans;
-        background-color: var(--color-sky-100);
+        @apply flex md:flex-col justify-center font-sans bg-page-bg;
     }
 
     header {
         @apply fixed top-0 left-0 right-0 z-10 w-full;
-        background-color: var(--navbar-bg);
-        height: var(--header-height);
-        min-height: var(--header-height);
-        max-height: var(--header-height);
-        box-shadow: calc(-1 * var(--scrollbar-width)) 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1), 
-                    calc(-1 * var(--scrollbar-width)) 0.125rem 0.25rem -0.0625rem rgba(0, 0, 0, 0.06);
+        @apply h-[var(--header-height)] min-h-[var(--header-height)] max-h-[var(--header-height)] bg-menu-bg;
     }
 
     nav {
-        @apply w-full h-full flex items-center justify-between px-4;
+        @apply w-full h-full flex items-center justify-between px-3;
     }
 
     main {
-        @apply flex-1 overflow-y-scroll bg-sky-100;
-        scrollbar-gutter: stable;
-        margin-top: var(--header-height);
-        margin-bottom: var(--footer-height);
-        height: calc(100vh - var(--header-height) - var(--footer-height));
+        @apply mx-auto;
+        width: var(--breakpoint-md);
+        max-width: var(--breakpoint-md);
+        min-width: min(100%, var(--breakpoint-md));
+        @apply overflow-y-auto;
+        @apply mt-[var(--header-height)];
     }
 
-    main::-webkit-scrollbar {
-        width: var(--scrollbar-width);
-    }
-    
-    main::-webkit-scrollbar-track {
-        background: var(--scrollbar-bg);
-    }
-    
-    main::-webkit-scrollbar-thumb {
-        background: var(--scrollbar-thumb);
-        border-radius: 1rem;
-    }
-    
-    main::-webkit-scrollbar-thumb:hover {
-        background: var(--scrollbar-thumb-hover);
-    }
 
-    footer {
-        @apply fixed bottom-0 left-0 right-0 z-10;
-        background-color: var(--footer-bg);
-        height: var(--footer-height);
-        min-height: var(--footer-height);
-        max-height: var(--footer-height);
-    }
-
-    /* Button */
+    /* Buttons */
     button, 
     [type="button"], 
     [type="reset"], 
     [type="submit"] {
-        @apply px-4 py-2 rounded-md font-medium transition-all duration-200 font-ui cursor-pointer;
+        @apply px-3 py-1 rounded-md font-medium transition-all duration-200 font-ui cursor-pointer;
     }
     
-    /* Clases de botones */
-    .button-primary {
-        @apply bg-sky-700 text-white shadow-md transition-all duration-200
-               hover:shadow-lg hover:scale-103 hover:brightness-110 hover:bg-sky-800
-               active:scale-95;
-    }
-    
-    .button-secondary {
-        @apply bg-earth-600 text-white shadow-md transition-all duration-200
-               hover:shadow-lg hover:scale-103 hover:brightness-110 hover:bg-earth-700
-               active:scale-95;
-    }
-    
-    .button-success {
-        @apply bg-status-pending-text text-white shadow-md transition-all duration-200
-               hover:shadow-lg hover:scale-103 hover:brightness-110 hover:bg-green-700
-               active:scale-95;
-    }
-    
-    .button-danger {
-        @apply bg-status-open-text text-white shadow-md transition-all duration-200
-               hover:shadow-lg hover:scale-103 hover:brightness-110 hover:bg-red-700
-               active:scale-95;
-    }
-    
-    .button-cancel {
-        @apply bg-gray-200 text-gray-500 shadow-md transition-all duration-200
-               hover:shadow-lg hover:scale-103 hover:brightness-110 hover:bg-gray-300
-               active:scale-95;
-    }
-    
-    /* Variante con borde */
-    .button-outline-primary {
-        @apply border-2 border-sky-700 text-sky-700 bg-transparent shadow-md transition-all duration-200
-               hover:shadow-lg hover:scale-103 hover:bg-sky-700 hover:text-white
-               active:scale-95;
-    }
-    
-    .button-outline-secondary {
-        @apply border-2 border-earth-600 text-earth-600 bg-transparent shadow-md transition-all duration-200
-               hover:shadow-lg hover:scale-103 hover:bg-earth-600 hover:text-white
-               active:scale-95;
-    }
-    
-    .button-outline-success {
-        @apply border-2 border-status-pending-text text-status-pending-text bg-transparent shadow-md transition-all duration-200
-               hover:shadow-lg hover:scale-103 hover:bg-status-pending-text hover:text-white
-               active:scale-95;
-    }
-    
-    .button-outline-danger {
-        @apply border-2 border-status-open-text text-status-open-text bg-transparent shadow-md transition-all duration-200
-               hover:shadow-lg hover:scale-103 hover:bg-status-open-text hover:text-white
-               active:scale-95;
-    }
-    
-    .button-outline-cancel {
-        @apply border-2 border-gray-400 text-gray-500 bg-transparent shadow-md transition-all duration-200
-               hover:shadow-lg hover:scale-103 hover:bg-gray-400 hover:text-white
-               active:scale-95;
-    }
-    
-    /* Botones con iconos */
-    .button-icon {
-        @apply flex items-center justify-center;
-    }
-    
-    .button-icon svg,
-    .button-icon i {
-        @apply mr-2;
-    }
-    
-    /* Tamaños de botones */
-    .button-lg {
-        @apply px-6 py-3 text-lg;
-    }
-    
-    .button-sm {
-        @apply px-2 py-1 text-sm;
-    }
-    
-    /* Estilo para botones deshabilitados */
     button:disabled,
     [type="button"]:disabled,
     [type="reset"]:disabled,
@@ -152,43 +42,29 @@
     }
 
     /* Tipografía - Encabezados */
-    h1, h2, h3, h4, h5, h6 {
-        @apply font-bold leading-tight mb-4 font-ui;
-        @apply font-title text-sky-700;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-        @apply text-center;
+    h1, h2, h3, h4  {
+        @apply font-bold leading-tight mb-4 font-title text-sky-700 text-center;
     }
 
     h1 {
-        @apply text-5xl;
-        @apply mb-8;
+        @apply text-5xl mb-8;
     }
 
     h2 {
-        @apply text-3xl text-center mb-6;
-        @apply mb-5
+        @apply text-3xl mb-6;
     }
 
     h3 {
-        @apply text-2xl;
-        @apply mb-3;
+        @apply text-2xl mb-4;
     }
 
     h4 {
-        @apply text-xl mb-5;
-    }
-
-    h5 {
-        @apply text-lg mb-3;
-    }
-
-    h6 {
-        @apply text-base;
+        @apply text-lg mb-2;
     }
 
     /* Párrafos y texto */
     p {
-        @apply mb-4 leading-relaxed;
+        @apply mb-3 font-p;
     }
 
     span {
@@ -196,17 +72,15 @@
     }
 
     a {
-        @apply transition-colors duration-200;
-        color: var(--color-interactive-neutral);
+        @apply transition-colors duration-200 text-[var(--color-interactive-neutral)];
     }
 
     a:hover {
-        color: var(--color-interactive-hover);
-        @apply underline;
+        @apply text-[var(--color-interactive-hover)] underline;
     }
 
     a:active {
-        color: var(--color-interactive-active);
+        @apply text-[var(--color-interactive-active)];
     }
 
     strong, b {
@@ -219,8 +93,7 @@
 
     /* Listas */
     ul, ol {
-        @apply mb-4 pl-5;
-        color: var(--color-sky-900);
+        @apply mb-4 pl-5 text-sky-900;
     }
 
     ul {
@@ -237,26 +110,15 @@
 
     /* Contenedores */
     section {
-        @apply py-8 px-4 mx-auto;
-        max-width: 800px;
-    }
-
-    @media (max-width: 768px) {
-        section {
-            max-width: 100%;
-        }
+        @apply py-8 px-4 mx-auto max-w-[var(--breakpoint-sm)];
     }
 
     article {
-        @apply mb-8 rounded-lg p-6 shadow-md;
-        background-color: white;
-        border: 1px solid var(--color-sky-200);
+        @apply mb-7 rounded-lg p-4 shadow-md bg-white border border-sky-200 overflow-hidden;
     }
 
     blockquote {
-        @apply pl-4 py-2 my-4 border-l-4 italic;
-        border-color: var(--color-sky-400);
-        background-color: var(--color-sky-50);
+        @apply pl-4 py-2 my-4 border-l-4 italic border-sky-400 bg-sky-50;
     }
 
     /* Tablas */
@@ -265,95 +127,50 @@
     }
 
     th {
-        @apply py-2 px-3 text-left font-bold border-b-2 font-ui;
-        background-color: var(--color-sky-50);
-        border-color: var(--color-sky-200);
-        color: var(--color-sky-800);
+        @apply py-2 px-3 text-left font-bold border-b-2 font-ui bg-sky-50 border-sky-200 text-sky-800;
     }
 
     td {
-        @apply py-2 px-3 border-b;
-        border-color: var(--color-sky-100);
+        @apply py-2 px-3 border-b border-sky-100;
     }
 
     tr:hover td {
-        background-color: var(--color-sky-50);
+        @apply bg-sky-50;
     }
 
     /* Formularios */
     form {
-        @apply mb-4;
+        @apply p-0 m-0;
     }
 
     label {
-        @apply block mb-2 font-medium font-ui;
-        color: var(--color-sky-800);
+        @apply block mb-2 font-medium font-ui text-sky-800;
     }
 
     input, textarea, select {
-        @apply w-full px-3 py-2 mb-3 border rounded-md;
-        border-color: var(--color-sky-300);
-        background-color: white;
+        @apply w-full px-3 py-2 mb-2 border-2 rounded-md border-sky-200 bg-white;
     }
 
     input:focus, textarea:focus, select:focus {
-        @apply outline-none border-2;
-        border-color: var(--color-earth-400);
+        @apply outline-none border-2 border-earth-400;
     }
 
     /* Elementos adicionales */
     hr {
-        @apply my-6 border-t;
-        border-color: var(--color-sky-200);
+        @apply my-6 border-t border-sky-200;
     }
 
     code, pre {
-        font-family: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
-    }
-
-    code {
-        @apply px-1 py-0.5 rounded text-sm;
-        background-color: var(--color-sky-100);
-        color: var(--color-earth-700);
-    }
-
-    pre {
-        @apply p-3 mb-4 rounded overflow-x-auto;
-        background-color: var(--color-sky-800);
-        color: white;
-    }
-
-    pre code {
+        @apply font-mono;
         @apply bg-transparent text-white p-0;
     }
 
-    /* Utilidades para tarjetas/componentes */
-    .card {
-        @apply rounded-lg shadow-md p-4 bg-white border;
-        border-color: var(--color-sky-100);
+    code {
+        @apply px-1 py-0.5 rounded text-sm bg-sky-100 text-earth-700;
     }
 
-    .tag {
-        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    pre {
+        @apply p-3 mb-4 rounded overflow-x-auto bg-sky-800 text-white;
     }
-
-    .tag-udn {
-        background-color: var(--color-tag-udn-bg);
-        color: var(--color-tag-udn-text);
-        border: 1px solid var(--color-tag-udn-border);
-    }
-
-    .tag-sector {
-        background-color: var(--color-tag-sector-bg);
-        color: var(--color-tag-sector-text);
-        border: 1px solid var(--color-tag-sector-border);
-    }
-
-    .tag-category {
-        background-color: var(--color-tag-category-bg);
-        color: var(--color-tag-category-text);
-        border: 1px solid var(--color-tag-category-border);
-    }
-
 
 }

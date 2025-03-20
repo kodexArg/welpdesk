@@ -152,7 +152,10 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'mediafiles'
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'core', 'static'),]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'core', 'static'),
+    os.path.join(BASE_DIR, 'assets'), # prueba
+]
 STATICFILES_FINDERS = [
     # Default finders
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -167,6 +170,6 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/logout/' 
 LOGIN_URL = '/accounts/login/'
 
-DJANGO_VITE_DEV_MODE = True
+DJANGO_VITE_DEV_MODE = True 
 DJANGO_VITE_ASSETS_PATH = BASE_DIR / 'assets'
 DJANGO_VITE_DEV_SERVER_PORT = 3000

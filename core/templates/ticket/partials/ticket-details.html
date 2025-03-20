@@ -2,13 +2,33 @@
     <label>Detalles del Ticket:</label>
         <div class="ticket-details-form">
             <div class="form-group">
-                <textarea name="body" id="body" class="form-control" placeholder="{{ issue.name }}: {{ issue.description }}"></textarea>
+                <textarea name="body" id="body" class="form-control" placeholder="{{ issue.description }}"></textarea>
+            </div>
+            <!-- Sección de fecha y hora -->
+            <div class="form-group">
+                <div class="flex items-center gap-4">
+                    <label for="reported_on_display" class="whitespace-nowrap">Fecha y hora de reporte:</label>
+                    <div class="w-64 form-control bg-gray-50 overflow-hidden text-ellipsis" id="reported_on_display"></div>
+                    <input type="hidden" 
+                           name="reported_on" 
+                           id="reported_on" 
+                           value="{% if ticket.reported_on %}{{ ticket.reported_on|date:'Y-m-d\TH:i' }}{% endif %}">
+                    <input type="datetime-local" 
+                           id="date_picker" 
+                           class="hidden" 
+                           onchange="updateReportedDate(this.value)">
+                    <button type="button" 
+                            onclick="document.getElementById('date_picker').showPicker()"
+                            class="px-3 py-1 bg-[var(--color-sky-700)] text-white rounded hover:brightness-110 cursor-pointer">
+                        <i class="fas fa-calendar-alt"></i>
+                    </button>
+                </div>
             </div>
             
             <!-- Sección de adjuntos -->
             <div class="attachments-container mt-3 border-t border-sky-100 pt-3">
                 <div class="flex items-center mb-2">
-                    <span class="text-sm font-medium text-gray-600"><i class="fa fa-paperclip mr-1 text-sky-500"></i>Adjuntos:</span>
+                    <span class="text-sm font-medium text-gray-600"></span>
                 </div>
                 <div id="attachments-list" class="space-y-2 mb-3">
                     <!-- No initial attachment - empty container -->
@@ -113,6 +133,42 @@
                 indexTracker.value = highestIndex;
                 console.log(`Índice más alto actualizado a: ${highestIndex}`);
             }
+        }
+    });
+
+    // Función para actualizar la fecha reportada
+    function updateReportedDate(dateValue) {
+        const reportedOnInput = document.getElementById('reported_on');
+        const reportedOnDisplay = document.getElementById('reported_on_display');
+        
+        if (dateValue) {
+            reportedOnInput.value = dateValue;
+            
+            const date = new Date(dateValue);
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            };
+            const formattedDate = date.toLocaleDateString('es-ES', options)
+                .replace(/^\w/, c => c.toUpperCase());
+            
+            reportedOnDisplay.textContent = formattedDate;
+        } else {
+            reportedOnInput.value = '';
+            reportedOnDisplay.textContent = '';
+        }
+    }
+
+    // Inicializar el display con la fecha actual si existe
+    document.addEventListener('DOMContentLoaded', function() {
+        const reportedOnInput = document.getElementById('reported_on');
+        if (reportedOnInput.value) {
+            updateReportedDate(reportedOnInput.value);
         }
     });
 </script>

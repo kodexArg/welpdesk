@@ -20,7 +20,7 @@
     
     <!-- Controles de paginación -->
     {% if page_obj.has_other_pages %}
-    <div class="pagination-controls">
+    <div class="flex flex-row justify-center items-center w-full gap-x-2">
         {% if page_obj.has_previous %}
             {% component "button" 
                 label="Primera" 
@@ -34,8 +34,8 @@
                 icon="fa fa-angle-left" / %}
         {% endif %}
         
-        <span class="pagination-info text-gray-700">
-            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        <span class="text-gray-700">
+            <span>Página</span> <span> {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
         </span>
         
         {% if page_obj.has_next %}
