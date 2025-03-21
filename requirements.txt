@@ -4,7 +4,9 @@ Django==5.1.7
 django-vite==3.1.0
 django_components==0.131
 djc_core_html_parser==1.0.1
+gunicorn==23.0.0
 loguru==0.7.3
+packaging==24.2
 psycopg2-binary==2.9.10
 python-dotenv==1.0.1
 PyYAML==6.0.2

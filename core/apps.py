@@ -10,11 +10,11 @@ class CoreConfig(AppConfig):
     name = "core"
 
     def ready(self):
-        # Make sure create_superuser is called before model operations
+        # Asegurar que create_superuser se ejecute antes de las operaciones de modelo
         post_migrate.connect(self.create_superuser, sender=self)
         post_migrate.connect(self.setup_groups_and_permissions, sender=self)
-        post_migrate.connect(self.create_model_groups, sender=self)
         post_migrate.connect(self.populate_db, sender=self)
+        # create_model_groups se moverá dentro de populate_db
 
     def setup_groups_and_permissions(self, sender, **kwargs):
         from django.contrib.auth.models import Permission
@@ -130,92 +130,91 @@ class CoreConfig(AppConfig):
     def populate_db(self, sender, **kwargs):
         from .models import UDN, Sector, IssueCategory, Issue
 
+        logger.info("Iniciando población de la base de datos...")
         data = self.load_yaml_data()
         if data is None:
             logger.warning("No se pudieron cargar los datos YAML. La base de datos no será poblada.")
             return
 
         try:
-            # Create UDNs
-            udns = {}
-            for udn_data in data['UDNs']:
+            # UDNs
+            udns_data = data.get('UDNs', [])
+            udns_map = {}
+            logger.info(f"Procesando {len(udns_data)} UDNs...")
+            for udn_data in udns_data:
                 udn_name = udn_data['name']
                 udn, created = UDN.objects.get_or_create(name=udn_name)
-                udns[udn_name] = udn
-                if created:
-                    logger.info("UDN creado: {}", udn_name)
-                else:
-                    logger.info("UDN existente: {}", udn_name)
+                udns_map[udn_name] = udn
+            logger.info("UDNs procesadas correctamente")
 
-            # Create Sectors
-            sectors = {}
-            for sector_data in data['Sectors']:
+            # Sectores
+            sectors_data = data.get('Sectors', [])
+            sectors_map = {}
+            logger.info(f"Procesando {len(sectors_data)} Sectores...")
+            for sector_data in sectors_data:
                 sector_name = sector_data['name']
                 sector, created = Sector.objects.get_or_create(name=sector_name)
-                if created:
-                    logger.info("Sector creado: {}", sector_name)
-                else:
-                    logger.info("Sector existente: {}", sector_name)
-                for udn_name in sector_data['udns']:
-                    try:
-                        udn = udns[udn_name]
-                        sector.udn.add(udn)
-                        logger.debug("UDN {} agregado al sector {}", udn_name, sector_name)
-                    except KeyError:
-                        logger.warning("UDN {} no encontrado al agregar al sector {}", udn_name, sector_name)
-                sectors[sector_name] = sector
 
-            # Create IssueCategories
-            issue_categories = {}
-            for category_data in data['IssueCategories']:
+                for udn_name in sector_data.get('udns', []):
+                    try:
+                        sector.udn.add(udns_map[udn_name])
+                    except KeyError:
+                        logger.warning(f"UDN '{udn_name}' no encontrado al agregar al sector '{sector_name}'")
+                sectors_map[sector_name] = sector
+            logger.info("Sectores procesados correctamente")
+
+            # Categorías de Incidencias
+            issue_categories_data = data.get('IssueCategories', [])
+            issue_categories_map = {}
+            logger.info(f"Procesando {len(issue_categories_data)} Categorías de Incidencias...")
+            for category_data in issue_categories_data:
                 category_name = category_data['name']
                 issue_category, created = IssueCategory.objects.get_or_create(name=category_name)
-                issue_categories[category_name] = issue_category
-                if created:
-                    logger.info("Categoría de incidencia creada: {}", category_name)
-                else:
-                    logger.info("Categoría de incidencia existente: {}", category_name)
-                
-                # Asociar categoría con sectores
-                if 'sectors' in category_data:
-                    for sector_name in category_data['sectors']:
-                        try:
-                            sector = sectors[sector_name]
-                            issue_category.sector.add(sector)
-                            logger.debug("Sector {} agregado a la categoría {}", sector_name, category_name)
-                        except KeyError:
-                            logger.warning("Sector {} no encontrado al agregar a la categoría {}", sector_name, category_name)
+                issue_categories_map[category_name] = issue_category
 
-            # Create Issues using the correct key from YAML
-            if 'Issues' in data:
-                for issue_data in data['Issues']:
-                    issue_name = issue_data['name']
-                    issue_category_name = issue_data['issue_category']
+                for sector_name in category_data.get('sectors', []):
                     try:
-                        issue_category = issue_categories[issue_category_name]
-                        issue, created = Issue.objects.get_or_create(
-                            issue_category=issue_category,
-                            name=issue_name,
-                            defaults={
-                                'description': issue_data['description'],
-                                'display_name': issue_data.get('display_name', issue_name)
-                            }
-                        )
-                        if created:
-                            logger.info("Incidencia creada: {} en la categoría {}", issue_name, issue_category_name)
-                        else:
-                            logger.info("Incidencia existente: {} en la categoría {}", issue_name, issue_category_name)
+                        issue_category.sector.add(sectors_map[sector_name])
                     except KeyError:
-                        logger.warning("Categoría de incidencia {} no encontrada al crear la incidencia {}", issue_category_name, issue_name)
-                    except Exception as e:
-                        logger.error("Error al crear la incidencia {}: {}", issue_name, str(e))
+                        logger.warning(f"Sector '{sector_name}' no encontrado al agregar a la categoría '{category_name}'")
+            logger.info("Categorías de Incidencias procesadas correctamente")
 
+            # Incidencias
+            issues_data = data.get('Issues', [])
+            logger.info(f"Procesando {len(issues_data)} Incidencias...")
+            issues_created = 0
+            issues_errors = 0
+            for issue_data in issues_data:
+                issue_name = issue_data['name']
+                issue_category_name = issue_data['issue_category']
+                try:
+                    issue_category = issue_categories_map[issue_category_name]
+                    issue, created = Issue.objects.get_or_create(
+                        issue_category=issue_category,
+                        name=issue_name,
+                        defaults={
+                            'description': issue_data['description'],
+                            'display_name': issue_data.get('display_name', issue_name)
+                        }
+                    )
+                    issues_created += 1
+                except KeyError:
+                    logger.warning(f"Categoría '{issue_category_name}' no encontrada al crear incidencia '{issue_name}'")
+                    issues_errors += 1
+                except Exception as e:
+                    logger.error(f"Error al crear incidencia '{issue_name}': {str(e)}")
+                    issues_errors += 1
+            
+            logger.info(f"Incidencias procesadas: {issues_created} creadas, {issues_errors} errores")
             logger.info("Población de la base de datos completada.")
+            
+            # Crear los grupos de modelos después de que la base de datos esté poblada
+            self.create_model_groups(sender, **kwargs)
 
         except Exception as e:
-            logger.error("Error durante la población de la base de datos: {}", e)
+            logger.error(f"Error durante la población de la base de datos: {e}")
             import traceback
-            logger.error("Traceback: {}", traceback.format_exc())
+            logger.error(f"Traceback: {traceback.format_exc()}")
 
     def create_superuser(self, sender, **kwargs):
         from django.contrib.auth.models import User
@@ -235,7 +234,7 @@ class CoreConfig(AppConfig):
         from django.contrib.auth.models import Group
         from django.contrib.auth.models import Permission
         from django.contrib.contenttypes.models import ContentType
-        from .models import UDN, Sector, IssueCategory
+        from .models import UDN, Sector
 
         data = self.load_yaml_data()
         if not data:
@@ -244,24 +243,28 @@ class CoreConfig(AppConfig):
 
         try:
             with transaction.atomic():
-                # Get content types and permissions
+                # Crear grupos por defecto
+                default_group_names = ["Operator", "Auditor", "Support", "Administrative"]
+                default_groups = {}
+                for group_name in default_group_names:
+                    group, created = Group.objects.get_or_create(name=group_name)
+                    default_groups[group_name] = group
+                    logger.info("{} grupo por defecto: {}", "Creado" if created else "Existente", group_name)
+
+                # Obtener tipos de contenido y permisos
                 udn_content_type = ContentType.objects.get(app_label='core', model='udn')
                 sector_content_type = ContentType.objects.get(app_label='core', model='sector')
-                category_content_type = ContentType.objects.get(app_label='core', model='issuecategory')
-
                 udn_view_permission = Permission.objects.get(codename='view_udn', content_type=udn_content_type)
                 sector_view_permission = Permission.objects.get(codename='view_sector', content_type=sector_content_type)
-                category_view_permission = Permission.objects.get(codename='view_issuecategory', content_type=category_content_type)
 
-                # Create and assign groups for UDNs
-                udns = data['UDNs']
-                for udn_data in udns:
+                # Crear y asignar grupos para UDNs
+                udns_data = data.get('UDNs', [])
+                for udn_data in udns_data:
                     udn_name = udn_data['name']
                     group_name = f"UDN {udn_name}"
                     group, created = Group.objects.get_or_create(name=group_name)
                     group.permissions.add(udn_view_permission)
                     logger.info("Grupo creado/verificado: {}", group_name)
-
                     try:
                         udn_instance = UDN.objects.get(name=udn_name)
                         udn_instance.groups.add(group)
@@ -270,15 +273,14 @@ class CoreConfig(AppConfig):
                     except UDN.DoesNotExist:
                         logger.warning("UDN {} no encontrado al asignar el grupo {}", udn_name, group_name)
 
-                # Create and assign groups for Sectors
-                sectors = data['Sectors']
-                for sector_data in sectors:
+                # Crear y asignar grupos para Sectores
+                sectors_data = data.get('Sectors', [])
+                for sector_data in sectors_data:
                     sector_name = sector_data['name']
                     group_name = f"SECTOR {sector_name}"
                     group, created = Group.objects.get_or_create(name=group_name)
                     group.permissions.add(sector_view_permission)
                     logger.info("Grupo creado/verificado: {}", group_name)
-
                     try:
                         sector_instance = Sector.objects.get(name=sector_name)
                         sector_instance.groups.add(group)
@@ -287,24 +289,7 @@ class CoreConfig(AppConfig):
                     except Sector.DoesNotExist:
                         logger.warning("Sector {} no encontrado al asignar el grupo {}", sector_name, group_name)
 
-                # Create and assign groups for IssueCategories
-                issue_categories = data['IssueCategories']
-                for category_data in issue_categories:
-                    category_name = category_data['name']
-                    group_name = f"Permitir {category_name}"
-                    group, created = Group.objects.get_or_create(name=group_name)
-                    group.permissions.add(category_view_permission)
-                    logger.info("Grupo creado/verificado: {}", group_name)
-
-                    try:
-                        category_instance = IssueCategory.objects.get(name=category_name)
-                        category_instance.permission_group.add(group)
-                        category_instance.save()
-                        logger.info("Grupo {} asignado a Categoría: {}", group_name, category_name)
-                    except IssueCategory.DoesNotExist:
-                        logger.warning("Categoría {} no encontrada al asignar el grupo {}", category_name, group_name)
-
-            logger.info("Grupos para UDN, Sector y Categorías creados/verificados exitosamente.")
+                logger.info("Grupos por defecto y grupos para UDN y Sector creados/verificados exitosamente.")
 
         except Exception as e:
             logger.error("Error al crear los grupos para los modelos: {}", e)

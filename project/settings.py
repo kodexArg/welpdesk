@@ -121,7 +121,7 @@ DATABASES = {
         'USER': os.environ['POSTGRES_USER'],
         'PASSWORD': os.environ['POSTGRES_PASSWORD'],
         'HOST': os.environ['POSTGRES_HOST'],
-        'PORT': os.environ.get('POSTGRES_PORT', '5432'), 
+        'PORT': os.environ['POSTGRES_PORT'],
     }
 }
 
@@ -141,10 +141,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATIC_ROOT = 'docker/volumes/staticfiles'
-
 MEDIA_URL = '/media/'
-MEDIA_ROOT = 'docker/volumes/mediafiles' 
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -154,7 +151,7 @@ MEDIA_ROOT = BASE_DIR / 'mediafiles'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'core', 'static'),
-    os.path.join(BASE_DIR, 'assets'), # prueba
+    os.path.join(BASE_DIR, 'assets'), # Vite output
 ]
 STATICFILES_FINDERS = [
     # Default finders
@@ -170,6 +167,12 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/logout/' 
 LOGIN_URL = '/accounts/login/'
 
-DJANGO_VITE_DEV_MODE = True 
+DJANGO_VITE_DEV_MODE = DEBUG
 DJANGO_VITE_ASSETS_PATH = BASE_DIR / 'assets'
 DJANGO_VITE_DEV_SERVER_PORT = 3000
+
+# Lista de orígenes confiables para CSRF
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8080', 'http://127.0.0.1:8080']
+
+# Si estás usando HTTPS en producción, añade los dominios con https://
+# CSRF_TRUSTED_ORIGINS += ['https://tudominio.com']
