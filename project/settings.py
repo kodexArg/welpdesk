@@ -174,5 +174,3 @@ DJANGO_VITE_DEV_SERVER_PORT = 3000
 # Lista de orígenes confiables para CSRF
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8080', 'http://127.0.0.1:8080']
 
-# Si estás usando HTTPS en producción, añade los dominios con https://
-# CSRF_TRUSTED_ORIGINS += ['https://tudominio.com']
