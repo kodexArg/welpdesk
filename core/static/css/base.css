@@ -4,6 +4,7 @@
     /* Estilos base del layout */
     body {
         @apply flex md:flex-col justify-center font-sans bg-page-bg;
+        @apply w-screen overflow-y-auto overflow-x-hidden;
     }
 
     header {
@@ -20,10 +21,30 @@
         width: var(--breakpoint-md);
         max-width: var(--breakpoint-md);
         min-width: min(100%, var(--breakpoint-md));
-        @apply overflow-y-auto;
-        @apply mt-[var(--header-height)];
+        @apply pt-[var(--header-height)];
+        overflow-y: visible;
     }
 
+
+    /* Estilos para la scrollbar del body */
+    body::-webkit-scrollbar {
+        width: 1rem;
+        @apply bg-sky-800;
+        -webkit-appearance: none;
+    }
+
+    body::-webkit-scrollbar-track {
+        @apply bg-sky-100;
+        margin-top: var(--header-height);
+    }
+
+    body::-webkit-scrollbar-thumb {
+        @apply bg-sky-800 rounded-full border-2 border-sky-100;
+    }
+
+    body::-webkit-scrollbar-thumb:hover {
+        @apply bg-sky-700;
+    }
 
     /* Tipografía - Encabezados */
     h1, h2, h3, h4  {
