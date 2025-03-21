@@ -14,39 +14,29 @@ from .logger import logger
 class HomeView(TemplateView):
     template_name = 'home.html'
 
-
 class TicketListView(LoginRequiredMixin, TemplateView):
-    template_name = 'ticket/ticket-list.html'  
-    
+    template_name = 'ticket/ticket-list.html'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
-        # Si el usuario es staff, o está en el grupo 'Auditor' o 'Soporte', mostrar todos los tickets
-        if self.request.user.is_staff or self.request.user.groups.filter(name__in=['Auditor', 'Support']).exists():
+
+        if self.request.user.is_staff:
             tickets = Ticket.objects.annotate(
                 last_message_timestamp=models.Max('messages__created_on')
             ).order_by('-last_message_timestamp')
+
         else:
-            # Para usuarios normales, mostrar solo sus propios tickets
-            tickets = Ticket.objects.filter(
-                messages__user=self.request.user,
-                messages__id=models.Subquery(
-                    Message.objects.filter(
-                        ticket=models.OuterRef('pk')
-                    ).order_by('created_on').values('id')[:1]
-                )
-            ).annotate(
+            tickets = Ticket.objects.get_queryset(user=self.request.user).annotate(
                 last_message_timestamp=models.Max('messages__created_on')
             ).order_by('-last_message_timestamp').distinct()
-        
-        # Configurar el paginador
+
         page_number = self.request.GET.get('page')
-        paginator = Paginator(tickets, 10) 
+        paginator = Paginator(tickets, 10)
         page_obj = paginator.get_page(page_number)
-        
+
         context['page_obj'] = page_obj
         context['tickets'] = page_obj.object_list
-        
+
         return context
 
 
@@ -250,6 +240,10 @@ class TicketDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'ticket'
     pk_url_kwarg = 'ticket_id'
     login_url = 'login'
+
+    def get_queryset(self):
+        """Sobre escribe el método get_queryset para aplicar el filtro de permisos."""
+        return Ticket.objects.get_queryset(user=self.request.user)
     
     def post(self, request, *args, **kwargs):
         """Handle form submissions for ticket responses."""
@@ -278,32 +272,49 @@ class TicketDetailView(LoginRequiredMixin, DetailView):
     
     def process_attachments(self, request, message):
         """Procesa y guarda los archivos adjuntos asociados al mensaje."""
-        attachment_count = 0
+        print(f"REQUEST.FILES: {request.FILES}")
+        print(f"ATTACHMENT INDICES: {request.POST.get('attachment-highest-index')}")
         
-        while f'attachment-file-{attachment_count}' in request.FILES:
-            file_key = f'attachment-file-{attachment_count}'
-            name_key = f'attachment-name-{attachment_count}'
-            
-            if file_key in request.FILES and request.FILES[file_key]:
-                uploaded_file = request.FILES[file_key]
+        # Método 1: usar highest-index para procesar adjuntos
+        if 'attachment-highest-index' in request.POST:
+            try:
+                highest_index = int(request.POST.get('attachment-highest-index', '0'))
+                print(f"Procesando {highest_index + 1} posibles adjuntos")
                 
-                custom_name = request.POST.get(name_key, '').strip()
-                filename = custom_name if custom_name else uploaded_file.name
-                
-                attachment = Attachment(
-                    file=uploaded_file,
-                    filename=filename,
-                    message=message
-                )
-                attachment.save()
-                
-                logger.info(
-                    "Archivo adjunto '{}' añadido a la respuesta en ticket {}",
-                    filename,
-                    message.ticket.id
-                )
-            
-            attachment_count += 1
+                for i in range(highest_index + 1):
+                    file_key = f'attachment-file-{i}'
+                    name_key = f'attachment-name-{i}'
+                    
+                    if file_key in request.FILES and request.FILES[file_key]:
+                        self.save_attachment(request, message, file_key, name_key)
+            except ValueError:
+                print("Error al procesar highest-index")
+        
+        # Método 2: iterar directamente sobre FILES como respaldo
+        for key in request.FILES:
+            if key.startswith('attachment-file-'):
+                index = key.split('-')[-1]
+                name_key = f'attachment-name-{index}'
+                self.save_attachment(request, message, key, name_key)
+    
+    def save_attachment(self, request, message, file_key, name_key):
+        """Helper method to save an individual attachment"""
+        uploaded_file = request.FILES[file_key]
+        custom_name = request.POST.get(name_key, '').strip()
+        filename = custom_name if custom_name else uploaded_file.name
+        
+        attachment = Attachment(
+            file=uploaded_file,
+            filename=filename,
+            message=message
+        )
+        attachment.save()
+        
+        logger.info(
+            "Archivo adjunto '{}' añadido a la respuesta en ticket {}",
+            filename,
+            message.ticket.id
+        )
 
 @login_required(login_url='login')
 def htmx_confirm_close_ticket(request, ticket_id):

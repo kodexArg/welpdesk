@@ -1,6 +1,8 @@
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User, Group
 from django.urls import reverse
+
 
 
 class UDN(models.Model):
@@ -58,11 +60,24 @@ class Issue(models.Model):
         return self.name
 
 
+class TicketManager(models.Manager):
+    def get_queryset(self, user=None):
+        queryset = super().get_queryset()
+        if user and not user.is_superuser:
+            return queryset.filter(
+                udn__permission_group__in=user.groups.all(),
+                sector__permission_group__in=user.groups.all()
+            )
+        return queryset
+
+
 class Ticket(models.Model):
     udn = models.ForeignKey(UDN, on_delete=models.CASCADE, verbose_name="UDN")
     sector = models.ForeignKey(Sector, on_delete=models.CASCADE, verbose_name="Sector")
     issue_category = models.ForeignKey(IssueCategory, on_delete=models.CASCADE, verbose_name="Categoría")
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name="Incidencia")
+
+    objects = TicketManager()  # Assign the custom manager
 
     class Meta:
         verbose_name = "Ticket"
@@ -85,7 +100,7 @@ class Message(models.Model):
         ('open', 'Abierto'),
         ('solved', 'Solucionado'),
         ('closed', 'Cerrado'),
-        ('feedback', 'Comentario'),
+        ('feedback', 'Comentado'),
     ]
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name="messages", verbose_name="Ticket")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open', verbose_name="Estado")

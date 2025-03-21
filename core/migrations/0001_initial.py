@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
             name='Message',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(choices=[('open', 'Abierto'), ('solved', 'Solucionado'), ('closed', 'Cerrado'), ('feedback', 'Comentario')], default='open', max_length=20, verbose_name='Estado')),
+                ('status', models.CharField(choices=[('open', 'Abierto'), ('solved', 'Solucionado'), ('closed', 'Cerrado'), ('feedback', 'Comentado')], default='open', max_length=20, verbose_name='Estado')),
                 ('reported_on', models.DateTimeField(blank=True, null=True, verbose_name='Fecha Reportada')),
                 ('created_on', models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Creación')),
                 ('body', models.TextField(blank=True, null=True, verbose_name='Cuerpo del Mensaje')),
