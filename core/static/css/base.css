@@ -25,22 +25,6 @@
     }
 
 
-    /* Buttons */
-    button, 
-    [type="button"], 
-    [type="reset"], 
-    [type="submit"] {
-        @apply px-3 py-1 rounded-md font-medium transition-all duration-200 font-ui cursor-pointer;
-    }
-    
-    button:disabled,
-    [type="button"]:disabled,
-    [type="reset"]:disabled,
-    [type="submit"]:disabled,
-    [class*="button-"]:disabled {
-        @apply opacity-50 cursor-not-allowed shadow-none hover:shadow-none hover:scale-100 hover:brightness-100;
-    }
-
     /* Tipografía - Encabezados */
     h1, h2, h3, h4  {
         @apply font-bold leading-tight mb-4 font-title text-sky-700 text-center;
