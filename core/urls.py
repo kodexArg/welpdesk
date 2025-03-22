@@ -14,11 +14,11 @@ urlpatterns = [
 
 # URLs para selección con HTMX
 urlpatterns += [
-    path('htmx/udn/', views_htmx.htmx_udn, name='htmx-udn'),
-    path('htmx/sector/<int:udn>/', views_htmx.htmx_sector, name='htmx-sector'),
-    path('htmx/issue-category/<int:sector>/', views_htmx.htmx_issue_category, name='htmx-issue-category'),
-    path('htmx/issue/<int:issue_category>/', views_htmx.htmx_issue, name='htmx-issue'),
-    path('htmx/ticket-details/<int:issue>/', views_htmx.htmx_ticket_details, name='htmx-ticket-details'),
+    path('htmx/create/udn/', views_htmx.htmx_udn, name='htmx-udn'),
+    path('htmx/create/sector/<int:udn>/', views_htmx.htmx_sector, name='htmx-sector'),
+    path('htmx/create/issue-category/<int:sector>/', views_htmx.htmx_issue_category, name='htmx-issue-category'),
+    path('htmx/create/issue/<int:issue_category>/', views_htmx.htmx_issue, name='htmx-issue'),
+    path('htmx/create/ticket-details/<int:issue>/', views_htmx.htmx_ticket_details, name='htmx-ticket-details'),
 ]
 
 # URLs para operaciones HTMX adicionales

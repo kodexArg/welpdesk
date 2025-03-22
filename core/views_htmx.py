@@ -14,7 +14,7 @@ def htmx_udn(request):
             models.Q(permission_group__in=user_groups) | 
             models.Q(groups__in=user_groups)
         ).distinct()
-    return render(request, 'ticket/partials/udn.html', {'udns': udns})
+    return render(request, 'ticket/partials/create/udn.html', {'udns': udns})
 
 @login_required(login_url='login')
 def htmx_sector(request, udn):
@@ -29,22 +29,22 @@ def htmx_sector(request, udn):
             models.Q(permission_group__in=user_groups) | 
             models.Q(groups__in=user_groups)
         ).distinct()
-    return render(request, 'ticket/partials/sector.html', {'sectors': sectors})
+    return render(request, 'ticket/partials/create/sector.html', {'sectors': sectors})
 
 @login_required(login_url='login')
 def htmx_issue_category(request, sector):
     issue_categories = IssueCategory.objects.filter(sector__id=sector)
-    return render(request, 'ticket/partials/issue-category.html', {'issue_categories': issue_categories})
+    return render(request, 'ticket/partials/create/issue-category.html', {'issue_categories': issue_categories})
 
 @login_required(login_url='login')
 def htmx_issue(request, issue_category):
     issues = Issue.objects.filter(issue_category=issue_category)
-    return render(request, 'ticket/partials/issue.html', {'issues': issues})
+    return render(request, 'ticket/partials/create/issue.html', {'issues': issues})
 
 @login_required(login_url='login')
 def htmx_ticket_details(request, issue):
     issue_obj = get_object_or_404(Issue, id=issue)
-    return render(request, 'ticket/partials/ticket-details.html', {
+    return render(request, 'ticket/partials/create/ticket-details.html', {
         'issue': issue_obj
     })
 
