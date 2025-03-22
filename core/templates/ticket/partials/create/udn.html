@@ -1,7 +1,7 @@
-<article id="udn-container">
-    <label>UDN:</label>
-    <div class="radio-button-group">
-        {% if udns %}
+{% if udns.count > 1 %}
+    <article id="udn-container">
+        <label>UDN:</label>
+        <div class="radio-button-group">
             {% for udn in udns %}
                 {% component "radio-button"
                     target="udn"
@@ -9,8 +9,18 @@
                     id=udn.pk
                     label=udn.name / %}
             {% endfor %}
-        {% else %}
-            <p class="no-udns-message">No tienes UDNs asignadas.</p>
-        {% endif %}
-    </div>
-</article>
+        </div>
+    </article>
+{% elif udns.count == 1 %}
+    {% with udns|first as udn %}
+        <input type="hidden" name="udn" value="{{ udn.pk }}" />
+        <div
+            hx-get="{% url 'htmx-sector' udn=udn.pk %}"
+            hx-target="#sector-container"
+            hx-swap="outerHTML"
+            hx-trigger="load"
+        ></div>
+    {% endwith %}
+{% else %}
+    <p class="no-udns-message">No tienes UDNs asignadas.</p>
+{% endif %}

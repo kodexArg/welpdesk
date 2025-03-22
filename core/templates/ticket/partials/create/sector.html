@@ -1,12 +1,26 @@
-<article id="sector-container">
-    <label>Sector:</label>
-    <div class="radio-button-group">
-        {% for sector in sectors %}
-            {% component "radio-button"
-                target="sector"
-                id=sector.pk
-                label=sector.name
-                next_target="issue-category" / %}
-        {% endfor %}
-    </div>
-</article>
+{% if sectors.count > 1 %}
+    <article id="sector-container">
+        <label>Sector:</label>
+        <div class="radio-button-group">
+            {% for sector in sectors %}
+                {% component "radio-button"
+                    target="sector"
+                    id=sector.pk
+                    label=sector.name
+                    next_target="issue-category" / %}
+            {% endfor %}
+        </div>
+    </article>
+{% elif sectors.count == 1 %}
+    {% with sectors|first as sector %}
+        <input type="hidden" name="sector" value="{{ sector.pk }}" />
+        <div
+            hx-get="{% url 'htmx-issue-category' sector=sector.pk %}"
+            hx-target="#issue-category-container"
+            hx-swap="outerHTML"
+            hx-trigger="load"
+        ></div>
+    {% endwith %}
+{% else %}
+     <p>No hay sectores disponibles para la UDN seleccionada.</p>
+{% endif %}

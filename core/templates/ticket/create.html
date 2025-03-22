@@ -12,23 +12,23 @@
 
         <h2>Crear Ticket</h2>
 
-        <article id="udn-container"
+        <div id="udn-container"
                 hx-get="{% url 'htmx-udn' %}"
                 hx-target="#udn-container"
                 hx-trigger="load">
-        </article>
+        </div>
 
-        <article id="sector-container" class="hidden-container">
-        </article>
+        <div id="sector-container" class="hidden-container">
+        </div>
 
-        <article id="issue-category-container" class="hidden-container">
-        </article>
+        <div id="issue-category-container" class="hidden-container">
+        </div>
 
-        <article id="issue-container" class="hidden-container">
-        </article>
+        <div id="issue-container" class="hidden-container">
+        </div>
 
-        <article id="ticket-details-container" class="hidden-container">
-        </article>
+        <div id="ticket-details-container" class="hidden-container">
+        </div>
 
         <!-- Botones -->
         <div class="grid grid-cols-2 gap-4 w-full">
