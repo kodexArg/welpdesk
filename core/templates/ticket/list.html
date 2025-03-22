@@ -20,7 +20,7 @@
     
     <!-- Controles de paginación -->
     {% if page_obj.has_other_pages %}
-    <div class="flex flex-row justify-center items-center w-full gap-x-2">
+    <div id="pagination" class="flex flex-row justify-center items-center w-full gap-x-2">
         {% if page_obj.has_previous %}
             {% component "button" 
                 label="Primera" 

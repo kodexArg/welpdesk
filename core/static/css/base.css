@@ -1,6 +1,7 @@
 /* AI: Este archivo contiene estilos base. Los colores y variables globales están en theme.css */
 
 @layer components {
+
     /* Estilos base del layout */
     body {
         @apply flex md:flex-col justify-center font-sans bg-page-bg;
@@ -122,6 +123,8 @@
         @apply mb-7 rounded-lg p-4 shadow-md bg-white border border-sky-200 overflow-hidden;
     }
 
+
+
     blockquote {
         @apply pl-4 py-2 my-4 border-l-4 italic border-sky-400 bg-sky-50;
     }
@@ -178,4 +181,14 @@
         @apply p-3 mb-4 rounded overflow-x-auto bg-sky-800 text-white;
     }
 
+
+    /* animaciones */
+    @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
 }

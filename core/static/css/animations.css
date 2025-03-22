@@ -1,0 +1,29 @@
+@layer components {
+    @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }
+
+    article {
+        animation: fadeIn 1000ms ease forwards;
+    }
+
+    #pagination {
+        animation: fadeIn 3000ms ease forwards;
+    }
+
+    
+}

@@ -30,7 +30,7 @@ class TicketListView(LoginRequiredMixin, TemplateView):
         tickets = queryset.annotate(last_message_timestamp=models.Max('messages__created_on')).order_by('-last_message_timestamp')
 
         page_number = self.request.GET.get('page')
-        paginator = Paginator(tickets, 20)
+        paginator = Paginator(tickets, 6)
         page_obj = paginator.get_page(page_number)
 
         context['page_obj'] = page_obj
