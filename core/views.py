@@ -65,15 +65,7 @@ class CreateTicketView(LoginRequiredMixin, FormView):
         
         self.process_attachments(message)
         
-        # Log de la creación del ticket ------------------------------------------
-        groups = [group.name for group in self.request.user.groups.all()]
-        logger.info(
-            "Ticket {} creado por usuario {} (Grupos: {})",
-            ticket.id,
-            self.request.user.username,
-            ', '.join(groups) if groups else "Sin grupos"
-        )
-        # ------------------------------------------------------------------------
+        logger.info(f"Ticket {ticket.id} creado por usuario {self.request.user.username}")
 
         return render(self.request, 'ticket/success.html', {'ticket': ticket})
 
@@ -97,13 +89,7 @@ class CreateTicketView(LoginRequiredMixin, FormView):
                 )
                 attachment.save()
                 
-                # Log de la adición de un archivo adjunto al ticket --------------
-                logger.info(
-                    "Archivo adjunto '{}' añadido al ticket {}",
-                    filename,
-                    message.ticket.id
-                )
-                # ------------------------------------------------------------------------
+                logger.info(f"Archivo adjunto '{filename}' añadido al ticket {message.ticket.id}")
 
             attachment_count += 1
 
@@ -133,14 +119,7 @@ class TicketDetailView(LoginRequiredMixin, DetailView):
         
         self.process_attachments(request, message)
 
-        # Log de la respuesta enviada al ticket --------------------------------
-        logger.info(
-            "Respuesta enviada al ticket {} por usuario {} con estado {}",
-            ticket.id,
-            request.user.username,
-            message.get_status_display()
-        )
-        # ------------------------------------------------------------------------
+        logger.info(f"Respuesta enviada al ticket {ticket.id} por usuario {request.user.username} con estado {message.get_status_display()}")
         
         return redirect('ticket-list')
     
@@ -212,14 +191,7 @@ def close_ticket(request, ticket_id):
             user=request.user
         )
         
-        # Log de cierre del ticket -----------------------------------------------
-        logger.info(
-            "Ticket {} cerrado por usuario {}",
-            ticket.id,
-            request.user.username
-        )
-        # ------------------------------------------------------------------------
+        logger.info(f"Ticket {ticket.id} cerrado por usuario {request.user.username}")
 
-        
         ticket.refresh_from_db()
         return render(request, 'ticket/partials/ticket-item.html', {'ticket': ticket})
