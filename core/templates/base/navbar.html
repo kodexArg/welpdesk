@@ -2,6 +2,10 @@
     {% component "brand-logo" / %}
     
     <div class="flex items-center space-x-1">
+        {% if user.is_staff %}
+            {% component "nav-link" link="development" icon="fa fa-tools" label="DESARROLLO" / %}
+            {% component "separator" / %}
+        {% endif %}
         {% if user.is_authenticated %}
             {% component "nav-link" link="create-ticket" icon="fa fa-plus" label="REPORTE" current_view=request.resolver_match.view_name / %}
             {% component "separator" / %}

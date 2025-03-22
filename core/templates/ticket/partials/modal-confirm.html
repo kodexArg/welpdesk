@@ -1,6 +1,6 @@
 <!-- Modal de confirmación con Tailwind -->
 <div id="modal-{{ ticket.id }}" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-  <div class="w-full max-w-md bg-white rounded-lg shadow-xl transform transition-all p-6 mx-4">
+  <div class="w-full max-w-md bg-white rounded-lg shadow-xl transform transition-all p-6 mx-4 items-center justify-center">
     <!-- Encabezado del modal -->
     <div class="mb-4">
       <h3 class="text-lg font-semibold text-gray-800">Cerrar Ticket</h3>
@@ -12,22 +12,22 @@
     </div>
     
     <!-- Botones de acción -->
-    <div class="flex justify-end gap-3">
+    <div class="flex gap-6 items-center justify-end">
       <button 
-        class="px-4 py-2 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
-        data-action="cancel">
-        <i class="fa fa-times mr-1"></i>Cancelar
-      </button>
-      
-      <button 
-        class="px-4 py-2 rounded-full text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 transition-colors"
+        class="button-success"
         data-action="confirm"
         hx-post="{% url 'close-ticket' ticket.id %}"
-        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
         hx-target="#ticket-{{ ticket.id }}"
         hx-swap="outerHTML">
         <i class="fa fa-check mr-1"></i>Confirmar
       </button>
+
+      <button 
+        class="button-cancel"
+        data-action="cancel">
+        <i class="fa fa-times mr-1"></i>Cancelar
+      </button>
+      
     </div>
   </div>
 </div>

@@ -167,6 +167,9 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/logout/' 
 LOGIN_URL = '/accounts/login/'
 
+# Agregamos la siguiente línea:
+LOGIN_URL = 'login' # Ya que la url nombrada para el login es 'login'
+
 DJANGO_VITE_DEV_MODE = DEBUG
 DJANGO_VITE_ASSETS_PATH = BASE_DIR / 'assets'
 DJANGO_VITE_DEV_SERVER_PORT = 3000

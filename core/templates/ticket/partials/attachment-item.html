@@ -29,7 +29,6 @@
             hx-delete="{% url 'htmx-remove-attachment' %}"
             hx-target="#attachment-group-{{ index }}"
             hx-swap="outerHTML"
-            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
         <i class="fa fa-trash"></i>
     </button>
 

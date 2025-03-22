@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "base/layout.html" %}
 {% load custom_tags %}
 
 {% block title %}HelpDesk - Ticket{% endblock %}
@@ -82,7 +82,6 @@
                         hx-target="#attachments-list"
                         hx-swap="beforeend" 
                         hx-include="[name='attachment-highest-index']"
-                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
                     <i class="fa fa-paperclip"></i> Agregar Adjunto
                 </button>
             </div>
