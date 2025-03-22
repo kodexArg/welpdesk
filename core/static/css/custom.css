@@ -9,42 +9,53 @@
     }
 
     .button-primary {
-        @apply text-sky-900 transition-all duration-200;
-        @apply hover:scale-[1.03] hover:brightness-110;
+        @apply text-sky-800;
+        @apply border-none;
+        @apply hover:scale-[1.1] hover:brightness-110;
         @apply active:scale-95;
+        @apply transition-all duration-500;
     }
-    .button-disabled {
-        @apply text-zinc-500;
-        @apply cursor-not-allowed;
-    }
+
     .button-secondary {
-        @apply text-earth-600 transition-all duration-200;
-        @apply hover:scale-[1.03] hover:brightness-110;
+        @apply text-earth-600;
+        @apply border-none;
+        @apply hover:scale-[1.1] hover:brightness-110;
         @apply active:scale-95;
-    }
-    .button-cancel {
-        @apply text-earth-700  transition-all duration-200;
-        @apply hover:scale-[1.03] hover:brightness-110 ;
-        @apply active:scale-95;
+        @apply transition-all duration-500;
     }
     
     .button-success {
-        @apply text-green-900 transition-all duration-200;
-        @apply hover:scale-[1.03] hover:brightness-110;
+        @apply text-green-600 ;
+        @apply border-none;
+        @apply hover:scale-[1.1] hover:brightness-110;
         @apply active:scale-95;
+        @apply transition-all duration-500;
+    }
+
+    .button-danger {
+        @apply text-red-600;
+        @apply border-none;
+        @apply hover:scale-[1.1] hover:brightness-110;
+        @apply active:scale-95;
+        @apply transition-all duration-500;
     }
     
     .button-success[disabled] {
         @apply text-zinc-500;
         @apply cursor-not-allowed;
-        @apply hover:scale-100 hover:brightness-100;
-        @apply active:scale-100;
+    }
+
+    .button-cancel {
+        @apply text-earth-700;
+        @apply border-none;
+        @apply hover:scale-[1.1] hover:brightness-110;
+        @apply active:scale-95;
+        @apply transition-all duration-500;
     }
     
-    .button-danger {
-        @apply text-red-600 transition-all duration-200;
-        @apply hover:scale-[1.03] hover:brightness-110;
-        @apply active:scale-95;
+    .button-disabled {
+        @apply text-zinc-500;
+        @apply cursor-not-allowed;
     }
     
 
