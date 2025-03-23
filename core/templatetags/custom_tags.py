@@ -21,18 +21,15 @@ def is_support(user):
         return False
 
 @register.filter(name='is_auditor')
-def is_support(user):
+def is_auditor(user):
     try:
         group = Group.objects.get(name='Auditor')
         return group in user.groups.all()
     except Group.DoesNotExist:
         return False
 
-@register.simple_tag(takes_context=True)
-def is_ticket_owner(context, ticket_id):
-    request = context['request']
-    user = request.user
-
+@register.filter(name='is_ticket_owner')
+def is_ticket_owner(user, ticket_id):
     try:
         ticket = Ticket.objects.get(pk=ticket_id)
     except Ticket.DoesNotExist:

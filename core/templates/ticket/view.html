@@ -111,7 +111,7 @@
                     disabled=False
                     action="submit"
                 / %}
-                {% if is_ticket_owner %}
+                {% if request.user|is_ticket_owner:ticket.id %}
                     {% component "button" 
                         label="Cerrar" 
                         id="btn-closed"
