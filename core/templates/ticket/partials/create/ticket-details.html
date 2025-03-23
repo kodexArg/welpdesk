@@ -37,7 +37,8 @@
         </div>
         <div id="attachments-list">
         </div>
-        <button type="button" id="add-attachment"
+        <button type="button" 
+                id="add-attachment"
                 class="primary-button hover:brightness-110 cursor-pointer hover:scale-101 transition-all duration-300"
                 hx-post="{% url 'htmx-add-attachment' %}"
                 hx-target="#attachments-list"

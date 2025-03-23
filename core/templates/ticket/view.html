@@ -77,12 +77,16 @@
             <div class="attachments-container">
                 <div id="attachments-list">
                 </div>
-                <button type="button" class="button"
+
+                <button type="button"
+                        id="add-attachment"
+                        class="border-none delay-75 primary-button hover:brightness-110 cursor-pointer hover:scale-101 transition-all duration-300"
                         hx-post="{% url 'htmx-add-attachment' %}"
                         hx-target="#attachments-list"
                         hx-swap="beforeend" 
-                        hx-include="[name='attachment-highest-index']"
-                    <i class="fa fa-paperclip"></i> Agregar Adjunto
+                        hx-include="[name='attachment-highest-index']">
+                        <i class="fa fa-paperclip"></i>
+                    Adjuntar
                 </button>
             </div>
             
@@ -107,14 +111,16 @@
                     disabled=False
                     action="submit"
                 / %}
-                {% component "button" 
-                    label="Cerrar" 
-                    id="btn-closed"
-                    icon="fa fa-check-circle"
-                    color="button-success"
-                    disabled=False
-                    action="submit"
-                / %}
+                {% if is_ticket_owner %}
+                    {% component "button" 
+                        label="Cerrar" 
+                        id="btn-closed"
+                        icon="fa fa-check-circle"
+                        color="button-success"
+                        disabled=False
+                        action="submit"
+                    / %}
+                {% endif %}
             </div>
         </form>
 
