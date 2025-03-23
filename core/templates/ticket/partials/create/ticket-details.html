@@ -1,148 +1,103 @@
-<article id="ticket-details-container" class="select-category">
-    <label>Detalles del Ticket:</label>
-        <div class="ticket-details-form">
-            <div class="form-group">
-                <textarea name="body" id="body" class="form-control" placeholder="{{ issue.description }}"></textarea>
-            </div>
-            <!-- Sección de fecha y hora -->
-            <div class="form-group">
-                <div class="flex items-center gap-4">
-                    <label for="reported_on_display" class="whitespace-nowrap">Fecha y hora de reporte:</label>
-                    <div class="w-64 form-control bg-gray-50 overflow-hidden text-ellipsis" id="reported_on_display"></div>
-                    <input type="hidden" 
-                           name="reported_on" 
-                           id="reported_on" 
-                           value="{% if ticket.reported_on %}{{ ticket.reported_on|date:'Y-m-d\TH:i' }}{% endif %}">
-                    <input type="datetime-local" 
-                           id="date_picker" 
-                           class="hidden" 
-                           onchange="updateReportedDate(this.value)">
-                    <button type="button" 
-                            onclick="document.getElementById('date_picker').showPicker()"
-                            class="px-3 py-1 bg-[var(--color-sky-700)] text-white rounded hover:brightness-110 cursor-pointer">
-                        <i class="fas fa-calendar-alt"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Sección de adjuntos -->
-            <div class="attachments-container mt-3 border-t border-sky-100 pt-3">
-                <div class="flex items-center mb-2">
-                    <span class="text-sm font-medium text-gray-600"></span>
-                </div>
-                <div id="attachments-list" class="space-y-2 mb-3">
-                    <!-- No initial attachment - empty container -->
-                </div>
-                <button type="button" id="add-attachment" class="text-xs bg-[var(--color-sky-700)] border border-[var(--color-sky-500)] text-white rounded-full py-1 px-3 inline-flex items-center no-underline font-medium hover:brightness-110"
-                        hx-post="{% url 'htmx-add-attachment' %}"
-                        hx-target="#attachments-list"
-                        hx-swap="beforeend"
-                        hx-include="form"
-                    <i class="fa fa-paperclip mr-1"></i> Adjuntar
-                </button>
-            </div>
+<article id="ticket-details-container">
+    <div id="title-container">
+        <label>Detalles del Ticket:</label>
+    </div>
+
+    <div id="body-container">
+        <textarea name="body" rows="4" id="body" placeholder="{{ issue.description }}"></textarea>
+    </div>
+
+    <div id="date-picker-container">
+        <label onclick="prepareAndShowDatePicker(event)" class="hover:brightness-110 cursor-pointer hover:scale-101 transition-all duration-300">
+            <i class="fa fa-calendar"></i>
+            fecha y hora de reporte
+            <input class="hidden"
+                   type="hidden"
+                   name="reported_on"
+                   id="reported_on"
+                   value="{% if ticket.reported_on %}{{ ticket.reported_on|date:'Y-m-d\TH:i' }}{% endif %}">
+            <input type="datetime-local"
+                   class="select-none pointer-events-none absolute top-0 left-0"
+                   id="date_picker"
+                   style="opacity: 0; position: absolute; z-index: -1;"
+                   onchange="updateReportedDate(this.value)">
+        </label>
+        <div id="date-visualization-container">
+            <span id="date-text-content" class="text-sm italic text-gray-700"></span>
+            <button type="button"
+                    id="clear-date"
+                    onclick="resetReportedDate()">
+            </button>
         </div>
-    <div id="ticket-details-error" class="htmx-indicator error-message" style="color: red;"></div>
+    </div>
+
+    <div id="attachments-container">
+        <div>
+            <span></span>
+        </div>
+        <div id="attachments-list">
+        </div>
+        <button type="button" id="add-attachment"
+                hx-post="{% url 'htmx-add-attachment' %}"
+                hx-target="#attachments-list"
+                hx-swap="beforeend"
+                hx-include="form">
+            Adjuntar
+        </button>
+    </div>
+
+    <div id="ticket-details-error"></div>
 </article>
 
 <script>
-    // Store attachment indices in a global array to track them
     window.attachmentIndices = [];
 
-    // Updated function with direct ID targeting
     function updateFilename(fileInput, index) {
-        // Keep track of this index
         if (!window.attachmentIndices.includes(index)) {
             window.attachmentIndices.push(index);
         }
-        
-        // Use direct ID reference
+
         const nameInput = document.getElementById(`attachment-name-${index}`);
         if (!nameInput) {
-            console.error(`Could not find name input with id=attachment-name-${index}`);
+            console.error(`No se encontró el input name con id=attachment-name-${index}`);
             return;
         }
-        
-        const attachmentGroup = document.getElementById(`attachment-group-${index}`);
-        if (!attachmentGroup) {
-            console.error(`Could not find attachment group with id=attachment-group-${index}`);
-            return;
-        }
-        
-        const errorDiv = attachmentGroup.querySelector('.file-size-error');
-        if (!errorDiv) {
-            console.error('Could not find error message element');
-            return;
-        }
-        
+
         if (fileInput.files.length > 0) {
             const file = fileInput.files[0];
-            const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB en bytes
-            
-            if (file.size > MAX_FILE_SIZE) {
-                errorDiv.textContent = `El archivo excede el límite de 50MB`;
-                fileInput.value = '';
-                nameInput.value = '';
-                nameInput.setAttribute('readonly', true);
-            } else {
-                errorDiv.textContent = '';
-                nameInput.value = file.name;
-                nameInput.removeAttribute('readonly');
-                nameInput.focus();
-                nameInput.select(); // Select the text for easy editing
-            }
+            nameInput.value = file.name;
         } else {
             nameInput.value = '';
-            nameInput.setAttribute('readonly', true);
         }
     }
-    
-    // Asegurar que el formulario padre tenga el atributo enctype correcto
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.querySelector('form');
-        if (form) {
-            // Asegurar que el formulario tenga el atributo enctype correcto
-            if (!form.getAttribute('enctype') || form.getAttribute('enctype') !== 'multipart/form-data') {
-                console.log('Añadiendo atributo enctype="multipart/form-data" al formulario');
-                form.setAttribute('enctype', 'multipart/form-data');
-            }
-            
-            // Añadir el campo oculto para rastrear índices
-            let indexTracker = document.getElementById('attachment-highest-index');
-            if (!indexTracker) {
-                indexTracker = document.createElement('input');
-                indexTracker.type = 'hidden';
-                indexTracker.name = 'attachment-highest-index';
-                indexTracker.id = 'attachment-highest-index';
-                indexTracker.value = '0';
-                form.appendChild(indexTracker);
-                console.log('Campo de índice de adjuntos añadido al formulario');
-            }
-        } else {
-            console.error('No se encontró ningún formulario en la página');
-        }
-    });
-    
-    // Actualizar el valor del índice más alto cuando se añade un nuevo adjunto
-    document.addEventListener('htmx:afterSwap', function(event) {
-        if (event.detail.target.id === 'attachments-list') {
-            const indexTracker = document.getElementById('attachment-highest-index');
-            if (indexTracker && window.attachmentIndices.length > 0) {
-                const highestIndex = Math.max(...window.attachmentIndices);
-                indexTracker.value = highestIndex;
-                console.log(`Índice más alto actualizado a: ${highestIndex}`);
-            }
-        }
-    });
 
-    // Función para actualizar la fecha reportada
+    function prepareAndShowDatePicker(event) {
+        event.preventDefault(); // Prevenir el comportamiento por defecto
+        const datePicker = document.getElementById('date_picker');
+
+        // Usar setTimeout con 0ms para llamar a showPicker() *después*
+        // de que el navegador haya enfocado el input.
+        setTimeout(() => {
+            try {
+                datePicker.showPicker();
+            } catch (error) {
+                console.error("Error al mostrar el selector:", error);
+                // Fallback: simular un clic (menos confiable)
+                datePicker.click();
+            }
+        }, 0);
+    }
+
+      // Función para actualizar la fecha reportada
     function updateReportedDate(dateValue) {
         const reportedOnInput = document.getElementById('reported_on');
         const reportedOnDisplay = document.getElementById('reported_on_display');
-        
+        const clearDateButton = document.getElementById('clear-date');
+        const dateTextContent = document.getElementById('date-text-content');
+
         if (dateValue) {
             reportedOnInput.value = dateValue;
-            
+
             const date = new Date(dateValue);
             const options = {
                 weekday: 'long',
@@ -155,19 +110,52 @@
             };
             const formattedDate = date.toLocaleDateString('es-ES', options)
                 .replace(/^\w/, c => c.toUpperCase());
-            
-            reportedOnDisplay.textContent = formattedDate;
+
+            dateTextContent.textContent = formattedDate;
+            clearDateButton.classList.remove('hidden');
         } else {
             reportedOnInput.value = '';
-            reportedOnDisplay.textContent = '';
+            dateTextContent.textContent = '';
+            clearDateButton.classList.add('hidden');
         }
     }
 
-    // Inicializar el display con la fecha actual si existe
+    // Función para limpiar la fecha
+    function resetReportedDate() {
+        document.getElementById('reported_on').value = '';
+        document.getElementById('date-text-content').textContent = '';
+        document.querySelector('#date-visualization-container span').textContent = '';
+        document.getElementById('date_picker').value = '';
+        document.getElementById('clear-date').classList.add('hidden');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-        const reportedOnInput = document.getElementById('reported_on');
-        if (reportedOnInput.value) {
-            updateReportedDate(reportedOnInput.value);
+        const form = document.querySelector('form');
+        if (form) {
+            if (!form.getAttribute('enctype') || form.getAttribute('enctype') !== 'multipart/form-data') {
+                form.setAttribute('enctype', 'multipart/form-data');
+            }
+
+            let indexTracker = document.getElementById('attachment-highest-index');
+            if (!indexTracker) {
+                indexTracker = document.createElement('input');
+                indexTracker.type = 'hidden';
+                indexTracker.name = 'attachment-highest-index';
+                indexTracker.id = 'attachment-highest-index';
+                indexTracker.value = '0';
+                form.appendChild(indexTracker);
+            }
+        } else {
+            console.error('No se encontró ningún formulario en la página');
+        }
+    });
+
+    document.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.id === 'attachments-list') {
+            const indexTracker = document.getElementById('attachment-highest-index');
+            if (indexTracker && window.attachmentIndices.length > 0) {
+                indexTracker.value = Math.max(...window.attachmentIndices);
+            }
         }
     });
 </script>
