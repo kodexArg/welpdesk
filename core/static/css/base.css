@@ -164,6 +164,10 @@
     }
 
     /* Elementos adicionales */
+    button {
+        @apply cursor-pointer;
+    }
+
     hr {
         @apply my-6 border-t border-sky-200;
     }
