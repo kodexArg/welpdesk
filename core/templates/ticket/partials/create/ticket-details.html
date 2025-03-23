@@ -7,7 +7,7 @@
         <textarea name="body" rows="4" id="body" placeholder="{{ issue.description }}"></textarea>
     </div>
 
-    <div id="date-picker-container">
+    <div id="date-picker-container" class="flex flex-wrap gap-2 justify-left items">
         <label onclick="prepareAndShowDatePicker(event)" class="hover:brightness-110 cursor-pointer hover:scale-101 transition-all duration-300">
             <i class="fa fa-calendar"></i>
             fecha y hora de reporte
@@ -38,10 +38,12 @@
         <div id="attachments-list">
         </div>
         <button type="button" id="add-attachment"
+                class="primary-button hover:brightness-110 cursor-pointer hover:scale-101 transition-all duration-300"
                 hx-post="{% url 'htmx-add-attachment' %}"
                 hx-target="#attachments-list"
                 hx-swap="beforeend"
                 hx-include="form">
+                <i class="fa fa-paperclip"></i>
             Adjuntar
         </button>
     </div>
