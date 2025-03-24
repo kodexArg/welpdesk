@@ -5,6 +5,10 @@ from django.db import models
 from .models import UDN, Sector, IssueCategory, Issue, Ticket
 
 @login_required(login_url='login')
+def htmx_list_content(request):
+    return render(request, 'ticket/partials/view/list-content.html')
+
+@login_required(login_url='login')
 def htmx_udn(request):
     if request.user.is_staff:
         udns = UDN.objects.all()

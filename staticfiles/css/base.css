@@ -1,0 +1,198 @@
+/* AI: Este archivo contiene estilos base. Los colores y variables globales están en theme.css */
+
+@layer components {
+
+    /* Estilos base del layout */
+    body {
+        @apply flex md:flex-col justify-center font-sans bg-page-bg;
+        @apply w-screen overflow-y-auto overflow-x-hidden;
+    }
+
+    header {
+        @apply fixed top-0 left-0 right-0 z-10 w-full;
+        @apply h-[var(--header-height)] min-h-[var(--header-height)] max-h-[var(--header-height)] bg-menu-bg;
+    }
+
+    nav {
+        @apply w-full h-full flex items-center justify-between px-3;
+    }
+
+    main {
+        @apply mx-auto;
+        width: var(--breakpoint-md);
+        max-width: var(--breakpoint-md);
+        min-width: min(100%, var(--breakpoint-md));
+        @apply pt-[var(--header-height)];
+        overflow-y: visible;
+    }
+
+
+    /* Estilos para la scrollbar del body */
+    body::-webkit-scrollbar {
+        width: 1rem;
+        @apply bg-sky-800;
+        -webkit-appearance: none;
+    }
+
+    body::-webkit-scrollbar-track {
+        @apply bg-sky-100;
+        margin-top: var(--header-height);
+    }
+
+    body::-webkit-scrollbar-thumb {
+        @apply bg-sky-800 rounded-full border-2 border-sky-100;
+    }
+
+    body::-webkit-scrollbar-thumb:hover {
+        @apply bg-sky-700;
+    }
+
+    /* Tipografía - Encabezados */
+    h1, h2, h3, h4  {
+        @apply font-bold leading-tight mb-4 font-title text-sky-700 text-center;
+    }
+
+    h1 {
+        @apply text-5xl mb-8;
+    }
+
+    h2 {
+        @apply text-3xl mb-6;
+    }
+
+    h3 {
+        @apply text-2xl mb-4;
+    }
+
+    h4 {
+        @apply text-lg mb-2;
+    }
+
+    /* Párrafos y texto */
+    p {
+        @apply mb-3 font-p;
+    }
+
+    span {
+        @apply inline-block;
+    }
+
+    a {
+        @apply transition-colors duration-200 text-[var(--color-interactive-neutral)];
+    }
+
+    a:hover {
+        @apply text-[var(--color-interactive-hover)] underline;
+    }
+
+    a:active {
+        @apply text-[var(--color-interactive-active)];
+    }
+
+    strong, b {
+        @apply font-bold;
+    }
+
+    em, i {
+        @apply italic;
+    }
+
+    /* Listas */
+    ul, ol {
+        @apply mb-4 pl-5 text-sky-900;
+    }
+
+    ul {
+        @apply list-disc;
+    }
+
+    ol {
+        @apply list-decimal;
+    }
+
+    li {
+        @apply mb-1;
+    }
+
+    /* Contenedores */
+    section {
+        @apply py-8 px-4 mx-auto max-w-[var(--breakpoint-sm)];
+    }
+
+    article {
+        @apply mb-7 rounded-lg p-4 shadow-md bg-white border border-sky-200 overflow-hidden;
+    }
+
+
+
+    blockquote {
+        @apply pl-4 py-2 my-4 border-l-4 italic border-sky-400 bg-sky-50;
+    }
+
+    /* Tablas */
+    table {
+        @apply w-full mb-4 border-collapse;
+    }
+
+    th {
+        @apply py-2 px-3 text-left font-bold border-b-2 font-ui bg-sky-50 border-sky-200 text-sky-800;
+    }
+
+    td {
+        @apply py-2 px-3 border-b border-sky-100;
+    }
+
+    tr:hover td {
+        @apply bg-sky-50;
+    }
+
+    /* Formularios */
+    form {
+        @apply p-0 m-0;
+    }
+
+    label {
+        @apply block mb-2 font-medium font-ui text-sky-800;
+    }
+
+    input, textarea, select {
+        @apply w-full px-3 py-2 mb-2 border-2 rounded-md border-sky-200 bg-white;
+    }
+
+    input:focus, textarea:focus, select:focus {
+        @apply outline-none border-2 border-earth-400;
+    }
+
+    /* Elementos adicionales */
+    button {
+        @apply cursor-pointer;
+    }
+
+    hr {
+        @apply my-6 border-t border-sky-200;
+    }
+
+    code, pre {
+        @apply font-mono;
+        @apply bg-transparent text-white p-0;
+    }
+
+    code {
+        @apply px-1 py-0.5 rounded text-sm bg-sky-100 text-earth-700;
+    }
+
+    pre {
+        @apply p-3 mb-4 rounded overflow-x-auto bg-sky-800 text-white;
+    }
+
+
+    /* animaciones */
+    @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+}

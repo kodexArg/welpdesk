@@ -1,0 +1,8 @@
+{% for ticket in tickets %}
+    <div hx-get="{% url 'ticket-item' ticket.id %}" 
+        hx-trigger="load"
+        hx-swap="outerHTML"
+        hx-target="this"
+        class="htmx-indicator">
+    </div>
+{% endfor %}

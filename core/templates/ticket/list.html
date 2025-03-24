@@ -5,18 +5,8 @@
 {% block content %}
 <section>
     <h2>Lista de Tickets</h2>
-    {% for ticket in tickets %}
-        <div hx-get="{% url 'ticket-item' ticket.id %}" 
-             hx-trigger="load"
-             hx-swap="outerHTML"
-             hx-target="this"
-             class="htmx-indicator">
-        </div>
-    {% empty %}
-        <div class="flex flex-row justify-center items-center min-w-full">
-            <p class="justify-center items-center text-earth-700 text-lg font-semibold">No hay tickets disponibles.</p>
-        </div>
-    {% endfor %}
+    <div id="list-container">
+    </div>
     
     <!-- Controles de paginación -->
     {% if page_obj.has_other_pages %}

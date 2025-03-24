@@ -23,6 +23,7 @@ urlpatterns += [
 
 # URLs para operaciones HTMX adicionales
 urlpatterns += [
+    path('htmx/list-content/', views_htmx.htmx_list_content, name='htmx-list-content'),
     path('htmx/add-attachment/', views_htmx.htmx_add_attachment, name='htmx-add-attachment'),
     path('htmx/remove-attachment/', views_htmx.htmx_remove_attachment, name='htmx-remove-attachment'),
     path('htmx/confirm-close/<int:ticket_id>/', views_htmx.htmx_confirm_close_ticket, name='htmx-confirm-close'),

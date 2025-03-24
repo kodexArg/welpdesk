@@ -1,0 +1,46 @@
+{% load static %}
+
+<label class="tag-switch">
+  <input 
+    type="checkbox" 
+    name="{{ name }}" 
+    value="{{ value }}" 
+    {% if checked %}checked{% endif %} 
+    class="tag-switch-input hidden"
+    hx-get="{% url 'ticket-list' %}"
+    hx-target="#htmx-list"
+    hx-swap="outerHTML"
+    hx-trigger="change"
+    hx-include="#filter-form-element"
+  >
+  <span class="tag tag-{{ type }} cursor-pointer transition-all duration-200 inline-block select-none tag-unpressed">
+    {{ label }}
+  </span>
+</label>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const tagSwitches = document.querySelectorAll('.tag-switch-input');
+    
+    tagSwitches.forEach(function(switchInput) {
+      // Establecer el estado inicial
+      updateTagAppearance(switchInput);
+      
+      // Añadir evento de cambio
+      switchInput.addEventListener('change', function(e) {
+        updateTagAppearance(this);
+      });
+    });
+    
+    function updateTagAppearance(input) {
+      const tagElement = input.nextElementSibling;
+      if (input.checked) {
+        tagElement.classList.add('tag-pressed');
+        tagElement.classList.remove('tag-unpressed');
+      } else {
+        tagElement.classList.remove('tag-pressed');
+        tagElement.classList.add('tag-unpressed');
+      }
+    }
+  });
+</script>
