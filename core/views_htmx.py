@@ -72,7 +72,7 @@ def htmx_add_attachment(request):
                 except ValueError:
                     pass
     new_index = max_index + 1
-    return render(request, 'ticket/partials/view/attachment-item.html', {
+    return render(request, 'ticket/partials/attachment-item.html', {
         'index': new_index
     })
 
