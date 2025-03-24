@@ -18,14 +18,12 @@ class DevelopmentView(TemplateView):
     template_name = 'base/development.html'
 
 
-
 class TicketListView(LoginRequiredMixin, TemplateView):
     template_name = 'ticket/list.html' 
 
     def get_template_names(self):
         """Determina qué template usar basado en si es una solicitud HTMX"""
         if self.request.headers.get('HX-Request') == 'true':
-            logger.info("Es una solicitud HTMX")
             return ['ticket/partials/view/list-content.html']
         return [self.template_name]
 
@@ -36,19 +34,16 @@ class TicketListView(LoginRequiredMixin, TemplateView):
 
         # Filtrado por udns
         if 'udn' in self.request.GET:
-            logger.info(f"Filtrando por udns: {self.request.GET.getlist('udn')}")
             udn = self.request.GET.getlist('udn')
             queryset = queryset.filter(udn__in=udn)
 
         # Filtrado por sectors
         if 'sector' in self.request.GET:
-            logger.info(f"Filtrando por sectors: {self.request.GET.getlist('sector')}")
             sector = self.request.GET.getlist('sector')
             queryset = queryset.filter(sector__in=sector)
 
         # Filtrado por issue-category
         if 'issue_category' in self.request.GET:
-            logger.info(f"Filtrando por issue-category: {self.request.GET.getlist('issue_category')}")
             issue_category = self.request.GET.getlist('issue_category')
             queryset = queryset.filter(issue_category__in=issue_category)
 

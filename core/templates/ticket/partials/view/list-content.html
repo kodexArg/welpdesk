@@ -1,9 +1,9 @@
 {% for ticket in tickets %}
-    <div hx-get="{% url 'ticket-item' ticket.id %}" 
-        hx-trigger="load"
-        hx-swap="outerHTML"
-        hx-target="this"
-        class="htmx-indicator">
+    <div hx-get="{% url 'ticket-item' ticket.id %}"
+         hx-trigger="load"
+         hx-swap="outerHTML"
+         hx-target="this"
+         class="htmx-indicator">
     </div>
 {% endfor %}
 
@@ -12,14 +12,16 @@
     {% if page_obj.has_previous %}
         {% component "button"
             label="Primera"
-            action="?page=1"
             color="button-secondary"
-            icon="fa fa-angle-double-left" / %}
+            icon="fa fa-angle-double-left"
+            action="?page=1{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
+            target="#list-container" / %}
         {% component "button"
             label="Anterior"
-            action="?page={{ page_obj.previous_page_number }}"
             color="button-secondary"
-            icon="fa fa-angle-left" / %}
+            icon="fa fa-angle-left"
+            action="?page={{ page_obj.previous_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
+            target="#list-container" / %}
     {% endif %}
 
     <span class="text-gray-700">
@@ -29,14 +31,16 @@
     {% if page_obj.has_next %}
         {% component "button"
             label="Siguiente"
-            action="?page={{ page_obj.next_page_number }}"
             color="button-secondary"
-            icon="fa fa-angle-right" / %}
+            icon="fa fa-angle-right"
+            action="?page={{ page_obj.next_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
+            target="#list-container" / %}
         {% component "button"
             label="Última"
-            action="?page={{ page_obj.paginator.num_pages }}"
             color="button-secondary"
-            icon="fa fa-angle-double-right" / %}
+            icon="fa fa-angle-double-right"
+            action="?page={{ page_obj.paginator.num_pages }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}"
+            target="#list-container" / %}
     {% endif %}
 </div>
 {% endif %}
