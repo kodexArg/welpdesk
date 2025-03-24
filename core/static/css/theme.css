@@ -1,5 +1,5 @@
 @theme {
-    --breakpoint-sm: 660px;
+    --breakpoint-sm: 720px;
     
     /* Sistema base */
     --color-primary: var(--color-sky-700);
