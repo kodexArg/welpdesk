@@ -1,12 +1,21 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.db import models
+from django.core.paginator import Paginator
 
 from .models import UDN, Sector, IssueCategory, Issue, Ticket
 
 @login_required(login_url='login')
 def htmx_list_content(request):
-    return render(request, 'ticket/partials/view/list-content.html')
+    queryset = Ticket.objects.all() if request.user.is_staff else Ticket.objects.get_queryset(user=request.user).distinct()
+    tickets = queryset.annotate(last_message_timestamp=models.Max('messages__created_on')).order_by('-last_message_timestamp')
+    page_number = request.GET.get('page')
+    paginator = Paginator(tickets, 6)  # Asegúrate de que el número de elementos por página coincida con el de TicketListView
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'ticket/partials/view/list-content.html', {
+        'tickets': page_obj.object_list,  # Pasa la lista de objetos de la página actual
+        'page_obj': page_obj  # Pasa el objeto de paginación
+    })
 
 @login_required(login_url='login')
 def htmx_udn(request):

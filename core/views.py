@@ -39,6 +39,9 @@ class TicketListView(LoginRequiredMixin, TemplateView):
         return context
 
 
+
+
+
 class CreateTicketView(LoginRequiredMixin, FormView):
     """
     Importante:

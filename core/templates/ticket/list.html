@@ -6,41 +6,11 @@
 <section>
     <h2>Lista de Tickets</h2>
     <div id="list-container">
+        <div hx-get="{% url 'htmx-list-content' %}" hx-trigger="load">
+            <p>Cargando...</p>
+        </div>
     </div>
     
-    <!-- Controles de paginación -->
-    {% if page_obj.has_other_pages %}
-    <div id="pagination" class="flex flex-row justify-center items-center w-full gap-x-2">
-        {% if page_obj.has_previous %}
-            {% component "button" 
-                label="Primera" 
-                action="?page=1" 
-                color="button-secondary" 
-                icon="fa fa-angle-double-left" / %}
-            {% component "button" 
-                label="Anterior" 
-                action="?page={{ page_obj.previous_page_number }}" 
-                color="button-secondary" 
-                icon="fa fa-angle-left" / %}
-        {% endif %}
-        
-        <span class="text-gray-700">
-            <span>Página</span> <span> {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-        </span>
-        
-        {% if page_obj.has_next %}
-            {% component "button" 
-                label="Siguiente" 
-                action="?page={{ page_obj.next_page_number }}" 
-                color="button-secondary" 
-                icon="fa fa-angle-right" / %}
-            {% component "button" 
-                label="Última" 
-                action="?page={{ page_obj.paginator.num_pages }}" 
-                color="button-secondary" 
-                icon="fa fa-angle-double-right" / %}
-        {% endif %}
-    </div>
-    {% endif %}
+    
 </section>
 {% endblock %}
