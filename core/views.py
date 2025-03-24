@@ -20,12 +20,37 @@ class DevelopmentView(TemplateView):
 
 
 class TicketListView(LoginRequiredMixin, TemplateView):
-    template_name = 'ticket/list.html'
+    template_name = 'ticket/list.html' 
+
+    def get_template_names(self):
+        """Determina qué template usar basado en si es una solicitud HTMX"""
+        if self.request.headers.get('HX-Request') == 'true':
+            logger.info("Es una solicitud HTMX")
+            return ['ticket/partials/view/list-content.html']
+        return [self.template_name]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         queryset = Ticket.objects.all() if self.request.user.is_staff else Ticket.objects.get_queryset(user=self.request.user).distinct()
+
+        # Filtrado por udns
+        if 'udn' in self.request.GET:
+            logger.info(f"Filtrando por udns: {self.request.GET.getlist('udn')}")
+            udn = self.request.GET.getlist('udn')
+            queryset = queryset.filter(udn__in=udn)
+
+        # Filtrado por sectors
+        if 'sector' in self.request.GET:
+            logger.info(f"Filtrando por sectors: {self.request.GET.getlist('sector')}")
+            sector = self.request.GET.getlist('sector')
+            queryset = queryset.filter(sector__in=sector)
+
+        # Filtrado por issue-category
+        if 'issue_category' in self.request.GET:
+            logger.info(f"Filtrando por issue-category: {self.request.GET.getlist('issue_category')}")
+            issue_category = self.request.GET.getlist('issue_category')
+            queryset = queryset.filter(issue_category__in=issue_category)
 
         tickets = queryset.annotate(last_message_timestamp=models.Max('messages__created_on')).order_by('-last_message_timestamp')
 

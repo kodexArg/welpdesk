@@ -6,7 +6,10 @@
 <section>
     <h2>Lista de Tickets</h2>
     <div id="list-container">
-        <div hx-get="{% url 'htmx-list-content' %}" hx-trigger="load">
+        <div
+            hx-get="{% url 'ticket-list' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}"
+            hx-trigger="load"
+            hx-target="#list-container">
             <p>Cargando...</p>
         </div>
     </div>
