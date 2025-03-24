@@ -13,21 +13,38 @@
     
     <!-- Botones de acción -->
     <div class="flex gap-6 items-center justify-end">
-      <button 
-        class="button-success"
-        data-action="confirm"
-        hx-post="{% url 'close-ticket' ticket.id %}"
-        hx-target="#ticket-{{ ticket.id }}"
-        hx-swap="outerHTML">
-        <i class="fa fa-check mr-1"></i>Confirmar
-      </button>
+      <form method="post" action="{% url 'close-ticket' ticket.id %}">
+        {% csrf_token %}
+        {% if request.GET.from == 'detail' %}
+          <!-- Si viene de la vista detallada, redirigir a la lista tras el cierre -->
+          <button 
+            class="button-success"
+            data-action="confirm"
+            hx-post="{% url 'close-ticket' ticket.id %}"
+            hx-push-url="{% url 'ticket-list' %}"
+            hx-redirect="{% url 'ticket-list' %}"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+            <i class="fa fa-check mr-1"></i>Confirmar
+          </button>
+        {% else %}
+          <!-- Si viene de la lista, actualizar el ticket en la página -->
+          <button 
+            class="button-success"
+            data-action="confirm"
+            hx-post="{% url 'close-ticket' ticket.id %}"
+            hx-target="#ticket-{{ ticket.id }}"
+            hx-swap="outerHTML"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+            <i class="fa fa-check mr-1"></i>Confirmar
+          </button>
+        {% endif %}
+      </form>
 
       <button 
         class="button-cancel"
         data-action="cancel">
         <i class="fa fa-times mr-1"></i>Cancelar
       </button>
-      
     </div>
   </div>
 </div>
@@ -56,8 +73,16 @@
     }
     
     // Manejador para eventos HTMX completados
-    function handleAfterRequest() {
-      setTimeout(closeModal, 200);
+    function handleAfterRequest(evt) {
+      {% if request.GET.from == 'detail' %}
+        // Si viene de la vista detallada, redirigir a la lista de tickets
+        if (evt.detail.successful) {
+          window.location.href = "{% url 'ticket-list' %}";
+        }
+      {% else %}
+        // En otros casos, solo cerrar el modal
+        setTimeout(closeModal, 200);
+      {% endif %}
     }
     
     // Eventos de clic en el modal

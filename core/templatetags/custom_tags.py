@@ -28,8 +28,11 @@ def is_auditor(user):
     except Group.DoesNotExist:
         return False
 
-@register.filter(name='is_ticket_owner')
-def is_ticket_owner(user, ticket_id):
+@register.simple_tag(takes_context=True)
+def is_ticket_owner(context, ticket_id):
+    request = context['request']
+    user = request.user
+
     try:
         ticket = Ticket.objects.get(pk=ticket_id)
     except Ticket.DoesNotExist:

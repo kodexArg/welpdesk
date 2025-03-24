@@ -72,7 +72,7 @@ def htmx_add_attachment(request):
                 except ValueError:
                     pass
     new_index = max_index + 1
-    return render(request, 'ticket/partials/attachment-item.html', {
+    return render(request, 'ticket/partials/view/attachment-item.html', {
         'index': new_index
     })
 
@@ -83,4 +83,4 @@ def htmx_remove_attachment(request):
 @login_required(login_url='login')
 def htmx_confirm_close_ticket(request, ticket_id):
     ticket = get_object_or_404(Ticket, id=ticket_id)
-    return render(request, 'ticket/partials/modal-confirm.html', {'ticket': ticket})
+    return render(request, 'ticket/partials/view/modal-confirm.html', {'ticket': ticket})

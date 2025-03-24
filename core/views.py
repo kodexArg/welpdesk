@@ -176,22 +176,48 @@ def ticket_item_view(request, ticket_id):
 
 
 @login_required(login_url='login')
+def htmx_confirm_close(request, ticket_id):
+    """
+    Vista para mostrar el modal de confirmación de cierre de ticket.
+    """
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    return render(request, 'ticket/partials/view/modal-confirm.html', {
+        'ticket': ticket
+    })
+
+
+@login_required(login_url='login')
 def close_ticket(request, ticket_id):
     """
     Ejecuta la acción de cerrar un ticket (status: closed) luego de htmx-confirm-close.
     """
     if request.method == 'POST':
         ticket = get_object_or_404(Ticket, id=ticket_id)
-        
-        last_message = ticket.messages.last()
 
+        # Cierra el ticket directamente.  También crea un mensaje asociado.
         Message.objects.create(
             ticket=ticket,
             status='closed',
             user=request.user
         )
-        
+        ticket.status = 'closed'
+        ticket.save()
+
         logger.info(f"Ticket {ticket.id} cerrado por usuario {request.user.username}")
 
-        ticket.refresh_from_db()
-        return render(request, 'ticket/partials/ticket-item.html', {'ticket': ticket})
+        return render(request, 'ticket/partials/view/item-article.html', {'ticket': ticket})
+
+
+@login_required  # Asegura que el usuario esté autenticado
+def ticket_view(request, ticket_id):
+    ticket = get_object_or_404(Ticket, pk=ticket_id)
+    first_message = Message.objects.filter(ticket=ticket).order_by('created_on').first()
+
+    # Calcula si el usuario actual es el dueño del ticket
+    is_owner = first_message is not None and first_message.user == request.user
+
+    context = {
+        'ticket': ticket,
+        'is_ticket_owner': is_owner,  # Pasa el resultado a la plantilla
+    }
+    return render(request, 'ticket/view.html', context)

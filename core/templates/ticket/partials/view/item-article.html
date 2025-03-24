@@ -1,4 +1,5 @@
 {% load custom_tags %}
+
 {% is_ticket_owner ticket.id as is_owner %}
 
 <article id="ticket-{{ ticket.id }}" class="rounded-2xl p-3 mb-3 ">
@@ -90,8 +91,8 @@
                         <i class="fa fa-paper-plane mr-1"></i>
                         <span>RESPONDER</span>
                     </a>
-                    {% if is_ticket_owner %}
-                    <button 
+                    {% if is_owner %}
+                    <button
                         class="text-xs font-medium inline-flex items-center py-1 px-3 rounded-full border border-gray-300 bg-gray-100 text-gray-500 hover:brightness-110"
                         type="button"
                         hx-get="{% url 'htmx-confirm-close' ticket.id %}"

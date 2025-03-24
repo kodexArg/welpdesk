@@ -104,22 +104,25 @@
                     / %}
                 {% endif %}
                 {% component "button" 
-                    label="Responder" 
+                    label="Comentar" 
                     id="btn-feedback"
                     icon="fa fa-paper-plane"
                     color="button-primary"
                     disabled=False
                     action="submit"
                 / %}
-                {% if request.user|is_ticket_owner:ticket.id %}
-                    {% component "button" 
-                        label="Cerrar" 
-                        id="btn-closed"
-                        icon="fa fa-check-circle"
-                        color="button-success"
-                        disabled=False
-                        action="submit"
-                    / %}
+                
+                {% is_ticket_owner ticket.id as is_owner %}
+                {% if is_owner %}
+                    <button 
+                        type="button"
+                        class="button-success"
+                        id="btn-close-confirm"
+                        hx-get="{% url 'htmx-confirm-close' ticket.id %}?from=detail"
+                        hx-target="body"
+                        hx-swap="beforeend">
+                        <i class="fa fa-check-circle"></i> Cerrar Ticket
+                    </button>
                 {% endif %}
             </div>
         </form>
@@ -215,20 +218,19 @@
             }
         });
         
-        document.getElementById('btn-solved').addEventListener('click', function(e) {
-            document.getElementById('status-field').value = 'solved';
-            // Validar que el campo de mensaje no esté vacío
-            if (!messageBody.value.trim()) {
-                e.preventDefault();
-                alert('Por favor, escriba un mensaje explicando la solución.');
-                messageBody.focus();
-            }
-        });
-        
-        document.getElementById('btn-closed').addEventListener('click', function() {
-            document.getElementById('status-field').value = 'closed';
-            // No requiere validación de mensaje
-        });
+        // Validación para solución (si existe el botón)
+        const solvedBtn = document.getElementById('btn-solved');
+        if (solvedBtn) {
+            solvedBtn.addEventListener('click', function(e) {
+                document.getElementById('status-field').value = 'solved';
+                // Validar que el campo de mensaje no esté vacío
+                if (!messageBody.value.trim()) {
+                    e.preventDefault();
+                    alert('Por favor, escriba un mensaje explicando la solución.');
+                    messageBody.focus();
+                }
+            });
+        }
     });
 </script>
 
