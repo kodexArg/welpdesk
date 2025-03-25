@@ -16,6 +16,7 @@ class TagSwitch(component.Component):
         hx_swap=None,
         hx_trigger=None,
         hx_include=None,
+        hx_vals=None,
     ):
         """
         Devuelve el contexto para el componente tag-switch.
@@ -31,16 +32,18 @@ class TagSwitch(component.Component):
             hx_swap (str, optional): Estrategia de intercambio de HTMX. Por defecto None.
             hx_trigger (str, optional): Evento que dispara la petición HTMX. Por defecto None.
             hx_include (str, optional): Selectores CSS para incluir en la petición HTMX. Por defecto None.
+            hx_vals (str, optional): Valores de HTMX. Por defecto None.
         """
         return {
-            'label': label,          # Texto visible del switch
-            'type': type,            # Tipo de etiqueta (udn, sector, category)
-            'name': name or label,   # Nombre del campo (para formularios)
-            'value': value or label, # Valor cuando está activado
-            'checked': checked,       # Estado inicial (activado/desactivado)
-            'hx_get': hx_get,        # URL de HTMX GET
+            'label': label,            # Texto visible del switch
+            'type': type,              # Tipo de etiqueta (udn, sector, category)
+            'name': name or label,     # Nombre del campo (para formularios)
+            'value': value or label,   # Valor cuando está activado
+            'checked': checked,        # Estado inicial (activado/desactivado)
+            'hx_get': hx_get,          # URL de HTMX GET
             'hx_target': hx_target,    # Objetivo de HTMX
-            'hx_swap': hx_swap,      # Estrategia de intercambio de HTMX
+            'hx_swap': hx_swap,        # Estrategia de intercambio de HTMX
             'hx_trigger': hx_trigger,  # Evento de disparo de HTMX
             'hx_include': hx_include,  # Selectores CSS de HTMX para incluir
+            'hx_vals': hx_vals,        # Valores de HTMX
         }

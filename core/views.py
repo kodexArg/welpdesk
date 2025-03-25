@@ -30,17 +30,23 @@ class TicketListView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        # Aquí es donde accedes a los parámetros enviados por el formulario en la URL (request.GET)
         current_filters = {
-            'udn': set(self.request.GET.getlist('udn')),
-            'sector': set(self.request.GET.getlist('sector')),
-            'issue_category': set(self.request.GET.getlist('issue_category'))
+            'udn': set(self.request.GET.getlist('udn')),  # Obtiene una lista de los valores del parámetro 'udn'
+            'sector': set(self.request.GET.getlist('sector')), # Obtiene una lista de los valores del parámetro 'sector'
+            'category': set(self.request.GET.getlist('category')) # Obtiene una lista de los valores del parámetro 'category'
         }
         logger.info(f"Current filters: {current_filters}")
+        print("--- Parámetros de la Request ---")
+        print(f"UDN: {self.request.GET.getlist('udn')}")
+        print(f"Sector: {self.request.GET.getlist('sector')}")
+        print(f"Categoría de Issue: {self.request.GET.getlist('category')}")
+        print("---------------------------------")
 
         # Obtener el queryset de tickets permitidos para el usuario
         permitted_tickets = Ticket.objects.all() if self.request.user.is_staff else Ticket.objects.get_queryset(user=self.request.user).distinct()
 
-        # Obtener las categorías permitidas para el usuario   
+        # Obtener las categorías permitidas para el usuario
         permitted_udns = UDN.objects.filter(ticket__in=permitted_tickets).distinct().order_by('name')
         permitted_sectors = Sector.objects.filter(ticket__in=permitted_tickets).distinct().order_by('name')
         permitted_issue_categories = IssueCategory.objects.filter(ticket__in=permitted_tickets).distinct().order_by('name')
@@ -55,9 +61,9 @@ class TicketListView(LoginRequiredMixin, TemplateView):
             sector = self.request.GET.getlist('sector')
             queryset = queryset.filter(sector__in=sector)
 
-        if 'issue_category' in self.request.GET:
-            issue_category = self.request.GET.getlist('issue_category')
-            queryset = queryset.filter(issue_category__in=issue_category)
+        if 'category' in self.request.GET:
+            category = self.request.GET.getlist('category')
+            queryset = queryset.filter(issue_category__in=category)
 
         tickets = queryset.annotate(last_message_timestamp=models.Max('messages__created_on')).order_by('-last_message_timestamp')
 
@@ -71,7 +77,6 @@ class TicketListView(LoginRequiredMixin, TemplateView):
         context['user_allowed_sectors'] = permitted_sectors
         context['user_allowed_issue_categories'] = permitted_issue_categories
         context['current_filters'] = current_filters
-
 
         return context
 

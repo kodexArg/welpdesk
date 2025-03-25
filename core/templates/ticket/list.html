@@ -18,31 +18,28 @@
 
 {% block aside %}
 <aside>
-    <div class="px-3 py-2 flex flex-wrap gap-1 w-60 bg-sky-800">
+    <form 
+        class="px-3 py-2 flex flex-wrap gap-1 w-60 bg-sky-800"
+        hx-get="."
+        hx-target="#list-container"
+        hx-trigger="change"
+        hx-include="this">
         {% for udn in user_allowed_udns %}
             {% if udn.name in current_filters.udn %}
                 {% component "tag-switch"
                     label=udn.name
                     type="udn"
-                    name=udn.name
+                    name="udn"
                     value=udn.pk
                     checked=True
-                    hx_get=request.path
-                    hx_target="#list-container"
-                    hx_swap="innerHTML"
-                    hx_include="#filter-form-element"
                 / %}
             {% else %}
                 {% component "tag-switch"
                     label=udn.name
                     type="udn"
-                    name=udn.name
+                    name="udn"
                     value=udn.pk
                     checked=False
-                    hx_get=request.path
-                    hx_target="#list-container"
-                    hx_swap="innerHTML"
-                    hx_include="#filter-form-element"
                 / %}
             {% endif %}
         {% endfor %}
@@ -52,57 +49,42 @@
                 {% component "tag-switch"
                     label=sector.name
                     type="sector"
-                    name=sector.name
+                    name="sector"
                     value=sector.pk
                     checked=True
-                    hx_get=request.path
-                    hx_target="#list-container"
-                    hx_swap="innerHTML"
-                    hx_include="#filter-form-element"
                 / %}
             {% else %}
                 {% component "tag-switch"
                     label=sector.name
                     type="sector"
-                    name=sector.name
+                    name="sector"
                     value=sector.pk
                     checked=False
-                    hx_get=request.path
-                    hx_target="#list-container"
-                    hx_swap="innerHTML"
-                    hx_include="#filter-form-element"
                 / %}
             {% endif %}
         {% endfor %}
 
-        {% for category in user_allowed_issue_categories %}
-            {% if category.name in current_filters.issue_category %}
+        {% for issue_category in user_allowed_issue_categories %}
+            {% if issue_category.name in current_filters.category %}
                 {% component "tag-switch"
-                    label=category.name
+                    label=issue_category.name
                     type="category"
-                    name=category.name
-                    value=category.pk
+                    name="category"
+                    value=issue_category.pk
                     checked=True
-                    hx_get=request.path
-                    hx_target="#list-container"
-                    hx_swap="innerHTML"
-                    hx_include="#filter-form-element"
-                 / %}
+                / %}
             {% else %}
                 {% component "tag-switch"
-                    label=category.name
+                    label=issue_category.name
                     type="category"
-                    name=category.name
-                    value=category.pk
+                    name="category"
+                    value=issue_category.pk
                     checked=False
-                    hx_get=request.path
-                    hx_target="#list-container"
-                    hx_swap="innerHTML"
-                    hx_include="#filter-form-element"
-                 / %}
+                / %}
             {% endif %}
         {% endfor %}
-    </div>
+
+    </form>
     <button type="button" id="collapse-filters"
         class="w-full p-4 bg-sky-800 border-sky-800 text-white rounded-br-2xl flex items-center justify-center hover:bg-sky-600 transition-colors duration-200">
         <i class="fa fa-caret-up fa-lg"></i>

@@ -12,7 +12,7 @@
     {% if hx_swap %}hx-swap="{{ hx_swap }}"{% endif %}
     {% if hx_trigger %}hx-trigger="{{ hx_trigger }}"{% endif %}
     {% if hx_include %}hx-include="{{ hx_include }}"{% endif %}
-  >
+    {% if hx_vals %}hx-vals="{{ hx_vals }}"{% endif %}>
   <span class="tag tag-{{ type }} cursor-pointer transition-all duration-200 inline-block select-none tag-unpressed">
     {{ label }}
   </span>
