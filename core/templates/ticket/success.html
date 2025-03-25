@@ -17,9 +17,19 @@
     <h1 class="mt-2">¡Ticket creado exitosamente!</h1>
 
     <article>
-        <div class="border-b border-sky-200 pb-4 mb-4">
-            <h2 class="text-left">#{{ ticket.id }} - {% if ticket.title %}{{ ticket.title }}{% else %}{{ ticket.issue.name }}{% endif %}</h2>
-        </div>
+        {% with first_message=ticket.messages.first %}
+            <div class="border-b border-sky-200 pb-4 mb-4">
+                <h2 class="text-left text-lg font-semibold">#{{ ticket.id }} - {% if ticket.title %}{{ ticket.title }}{% else %}{{ ticket.issue.name }}{% endif %}</h2>
+                <p class="text-sm text-gray-600">
+                    Reportado por: <strong>{{ first_message.user.get_full_name|default:first_message.user.username }}</strong>  el {{ first_message.created_on|date:"l d \d\e F \d\e Y, H:i" }}
+                </p>
+                 {% if first_message.reported_on %}
+                    <p class="text-sm text-gray-600">
+                        Fecha reportada: {{ first_message.reported_on|date:"l d \d\e F \d\e Y, H:i" }}
+                    </p>
+                {% endif %}
+            </div>
+        {% endwith %}
         
         <div class="mb-6">
             <div class="flex flex-wrap items-center mb-4">
@@ -38,37 +48,35 @@
         </div>
         
         <blockquote class="bg-sky-50 border-l-4 border-sky-700 p-4 rounded-r-md mb-6">
-            <p>
-                {% if ticket.issue %}
-                    {{ ticket.issue }}
+            {% with first_message=ticket.messages.first %}
+                {% if first_message.body %}
+                    <p class="mb-4">
+                        {{ first_message.body }}
+                    </p>
                 {% else %}
-                    No hay descripción
+                    <p class="mb-4 text-gray-500 italic">No hay descripción proporcionada.</p>
                 {% endif %}
-            </p>
-            
-            {% if ticket.messages.first.reported_on %}
-            <p class="mt-4 text-sm text-sky-700 font-medium">
-                <i class="far fa-calendar-alt mr-1"></i> Este ticket tiene una fecha registrada: {{ ticket.messages.first.reported_on|date:"l d \d\e F \d\e Y, H:i" }}
-            </p>
-            {% endif %}
+
+                {% if first_message.attachments.all %}
+                   <div class="mt-4">
+                        <p class="text-sm text-sky-700 font-medium">Adjuntos:</p>
+                        <ul class="list-disc pl-5">
+                            {% for attachment in first_message.attachments.all %}
+                                <li>
+                                    <a href="{{ attachment.file.url }}" class="text-blue-600 hover:underline" target="_blank">
+                                        {{ attachment.filename }} <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
         </blockquote>
             <p class="text-green-700 font-stretch-expanded italic">El ticket ha sido registrado correctamente.</p>
     </article>
     
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-            {% component "button" 
-                label="CREAR OTRO TICKET" 
-                action="{% url 'create-ticket' %}" 
-                color="button-primary"
-                icon="fas fa-plus"
-            / %}
-            {% component "button" 
-                label="LISTA DE TICKETS" 
-                action="{% url 'ticket-list' %}" 
-                color="button-primary"
-                icon="fas fa-list-ul"
-            / %}
-        </div>
+
     
 </section>
 {% endblock %}
