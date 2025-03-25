@@ -7,11 +7,11 @@
     value="{{ value }}" 
     {% if checked %}checked{% endif %} 
     class="tag-switch-input hidden"
-    hx-get="{% url 'ticket-list' %}"
-    hx-target="#htmx-list"
-    hx-swap="outerHTML"
-    hx-trigger="change"
-    hx-include="#filter-form-element"
+    {% if hx_get %}hx-get="{{ hx_get }}"{% endif %}
+    {% if hx_target %}hx-target="{{ hx_target }}"{% endif %}
+    {% if hx_swap %}hx-swap="{{ hx_swap }}"{% endif %}
+    {% if hx_trigger %}hx-trigger="{{ hx_trigger }}"{% endif %}
+    {% if hx_include %}hx-include="{{ hx_include }}"{% endif %}
   >
   <span class="tag tag-{{ type }} cursor-pointer transition-all duration-200 inline-block select-none tag-unpressed">
     {{ label }}

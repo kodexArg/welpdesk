@@ -30,18 +30,19 @@ class TicketListView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        current_filters = {}
+        current_filters = {
+            'udn': set(self.request.GET.getlist('udn')),
+            'sector': set(self.request.GET.getlist('sector')),
+            'issue_category': set(self.request.GET.getlist('issue_category'))
+        }
+        logger.info(f"Current filters: {current_filters}")
 
         # Obtener el queryset de tickets permitidos para el usuario
         permitted_tickets = Ticket.objects.all() if self.request.user.is_staff else Ticket.objects.get_queryset(user=self.request.user).distinct()
 
-        # Obtener los UDNs permitidos para el usuario
+        # Obtener las categorías permitidas para el usuario   
         permitted_udns = UDN.objects.filter(ticket__in=permitted_tickets).distinct().order_by('name')
-
-        # Obtener los Sectores permitidos para el usuario
         permitted_sectors = Sector.objects.filter(ticket__in=permitted_tickets).distinct().order_by('name')
-
-        # Obtener las Categorías de Incidencia permitidas para el usuario
         permitted_issue_categories = IssueCategory.objects.filter(ticket__in=permitted_tickets).distinct().order_by('name')
 
         # Aplicar los filtros de la request
@@ -66,16 +67,13 @@ class TicketListView(LoginRequiredMixin, TemplateView):
 
         context['page_obj'] = page_obj
         context['tickets'] = page_obj.object_list
-        context['udns'] = permitted_udns
-        context['sectors'] = permitted_sectors
-        context['issue_categories'] = permitted_issue_categories
+        context['user_allowed_udns'] = permitted_udns
+        context['user_allowed_sectors'] = permitted_sectors
+        context['user_allowed_issue_categories'] = permitted_issue_categories
         context['current_filters'] = current_filters
 
 
         return context
-
-
-
 
 
 class CreateTicketView(LoginRequiredMixin, FormView):

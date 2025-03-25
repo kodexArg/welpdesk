@@ -17,36 +17,117 @@
 {% endblock %}
 
 {% block aside %}
-<aside class="hidden">
-    <form id="filter-form" method="get" action="{% url 'ticket-list' %}"
-            hx-get="{% url 'ticket-list' %}"
-            hx-target="#ticket-list-container"
-            hx-swap="outerHTML"
-            hx-trigger="submit"
-            class="p-2 flex flex-wrap gap-1 w-55 bg-sky-800 rounded-br-2xl">
-        {% for udn in udns %}
+<aside>
+    <div class="px-3 py-2 flex flex-wrap gap-1 w-60 bg-sky-800">
+        {% for udn in user_allowed_udns %}
             {% if udn.name in current_filters.udn %}
-                {% component "tag-switch" label=udn.name type="udn" name="udn" value=udn.name checked=True / %}
+                {% component "tag-switch"
+                    label=udn.name
+                    type="udn"
+                    name=udn.name
+                    value=udn.pk
+                    checked=True
+                    hx_get=request.path
+                    hx_target="#list-container"
+                    hx_swap="innerHTML"
+                    hx_include="#filter-form-element"
+                / %}
             {% else %}
-                {% component "tag-switch" label=udn.name type="udn" name="udn" value=udn.name checked=False / %}
+                {% component "tag-switch"
+                    label=udn.name
+                    type="udn"
+                    name=udn.name
+                    value=udn.pk
+                    checked=False
+                    hx_get=request.path
+                    hx_target="#list-container"
+                    hx_swap="innerHTML"
+                    hx_include="#filter-form-element"
+                / %}
             {% endif %}
         {% endfor %}
 
-        {% for sector in sectors %}
+        {% for sector in user_allowed_sectors %}
             {% if sector.name in current_filters.sector %}
-                {% component "tag-switch" label=sector.name type="sector" name="sector" value=sector.name checked=True / %}
+                {% component "tag-switch"
+                    label=sector.name
+                    type="sector"
+                    name=sector.name
+                    value=sector.pk
+                    checked=True
+                    hx_get=request.path
+                    hx_target="#list-container"
+                    hx_swap="innerHTML"
+                    hx_include="#filter-form-element"
+                / %}
             {% else %}
-                {% component "tag-switch" label=sector.name type="sector" name="sector" value=sector.name checked=False / %}
+                {% component "tag-switch"
+                    label=sector.name
+                    type="sector"
+                    name=sector.name
+                    value=sector.pk
+                    checked=False
+                    hx_get=request.path
+                    hx_target="#list-container"
+                    hx_swap="innerHTML"
+                    hx_include="#filter-form-element"
+                / %}
             {% endif %}
         {% endfor %}
 
-        {% for category in issue_categories %}
+        {% for category in user_allowed_issue_categories %}
             {% if category.name in current_filters.issue_category %}
-                {% component "tag-switch" label=category.name type="category" name="issue-category" value=category.name checked=True / %}
+                {% component "tag-switch"
+                    label=category.name
+                    type="category"
+                    name=category.name
+                    value=category.pk
+                    checked=True
+                    hx_get=request.path
+                    hx_target="#list-container"
+                    hx_swap="innerHTML"
+                    hx_include="#filter-form-element"
+                 / %}
             {% else %}
-                {% component "tag-switch" label=category.name type="category" name="issue-category" value=category.name checked=False / %}
+                {% component "tag-switch"
+                    label=category.name
+                    type="category"
+                    name=category.name
+                    value=category.pk
+                    checked=False
+                    hx_get=request.path
+                    hx_target="#list-container"
+                    hx_swap="innerHTML"
+                    hx_include="#filter-form-element"
+                 / %}
             {% endif %}
         {% endfor %}
-    </form>
+    </div>
+    <button type="button" id="collapse-filters"
+        class="w-full p-4 bg-sky-800 border-sky-800 text-white rounded-br-2xl flex items-center justify-center hover:bg-sky-600 transition-colors duration-200">
+        <i class="fa fa-caret-up fa-lg"></i>
+    </button>
 </aside>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const collapseButton = document.getElementById('collapse-filters');
+            const filterForm = document.getElementById('filter-form');
+            const icon = collapseButton.querySelector('i');
+
+            collapseButton.addEventListener('click', function() {
+                filterForm.classList.toggle('hidden');
+
+                if (filterForm.classList.contains('hidden')) {
+                    icon.classList.remove('fa-caret-up');
+                    icon.classList.add('fa-filter');
+                } else {
+                    icon.classList.remove('fa-filter');
+                    icon.classList.add('fa-caret-up');
+                }
+            });
+        });
+    </script>
 {% endblock %}
