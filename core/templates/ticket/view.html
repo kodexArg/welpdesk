@@ -93,13 +93,13 @@
             <input type="hidden" name="status" id="status-field" value="feedback">
             
             <div style="display: flex; justify-content: flex-end; gap: 1rem;">
-                {% if request.user|has_group:'Soporte' %}
+                {% if request.user|has_group:'Support' %}
                     {% component "button" 
                         label="Solución" 
                         id="btn-solved"
                         icon="fa fa-wrench"
                         color="button-primary"
-                        disabled=is_soporte
+                        disabled=is_support
                         action="submit"
                     / %}
                 {% endif %}
@@ -124,6 +124,9 @@
                         <i class="fa fa-check-circle"></i> Cerrar Ticket
                     </button>
                 {% endif %}
+                <a href="{% url 'ticket-list' %}" class="button-primary">
+                    <i class="fa fa-reply mr-1"></i> Volver
+                </a>
             </div>
         </form>
 

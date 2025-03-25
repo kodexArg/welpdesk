@@ -19,13 +19,13 @@
 {% block aside %}
 <aside>
     <form 
-        class="w-60 bg-sky-800"
+        class="w-70 bg-sky-800"
         id="filter-form"
         hx-get="."
         hx-target="#list-container"
         hx-trigger="change"
         hx-include="this">
-        <div class="px-3 py-2 flex flex-wrap gap-1">
+        <div class="px-3 py-2 flex flex-wrap gap-x-2 gap-y-1">
             {% for udn in user_allowed_udns %}
                 {% if udn.name in current_filters.udn %}
                     {% component "tag-switch" label=udn.name type="udn" name="udn" value=udn.pk checked=True / %}
@@ -51,7 +51,7 @@
             {% endfor %}
         </div>
 
-        <div class="px-3 pt-1 flex flex-wrap gap-1">
+        <div class="px-3 pt-1 flex flex-wrap gap-x-2 gap-y-1">
             {% if "open" in current_filters.status %}
                 {% component "status-switch" status="open" checked=True / %}
             {% else %}
