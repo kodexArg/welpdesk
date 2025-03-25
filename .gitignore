@@ -1,3 +1,6 @@
+staticfiles/
+mediafiles/
+
 # Archivos de Python generados
 __pycache__/
 *.pyc
