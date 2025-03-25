@@ -153,6 +153,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'core', 'static'),
     os.path.join(BASE_DIR, 'assets'), # Vite output
 ]
+
 STATICFILES_FINDERS = [
     # Default finders
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -175,5 +176,7 @@ DJANGO_VITE_ASSETS_PATH = BASE_DIR / 'assets'
 DJANGO_VITE_DEV_SERVER_PORT = 3000
 
 # Lista de orígenes confiables para CSRF
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8080', 'http://127.0.0.1:8080']
+CSRF_TRUSTED_ORIGINS = [origin for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if origin]
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
