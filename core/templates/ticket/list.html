@@ -13,7 +13,40 @@
             <p>Cargando...</p>
         </div>
     </div>
-    
-    
 </section>
+{% endblock %}
+
+{% block aside %}
+<aside class="hidden">
+    <form id="filter-form" method="get" action="{% url 'ticket-list' %}"
+            hx-get="{% url 'ticket-list' %}"
+            hx-target="#ticket-list-container"
+            hx-swap="outerHTML"
+            hx-trigger="submit"
+            class="p-2 flex flex-wrap gap-1 w-55 bg-sky-800 rounded-br-2xl">
+        {% for udn in udns %}
+            {% if udn.name in current_filters.udn %}
+                {% component "tag-switch" label=udn.name type="udn" name="udn" value=udn.name checked=True / %}
+            {% else %}
+                {% component "tag-switch" label=udn.name type="udn" name="udn" value=udn.name checked=False / %}
+            {% endif %}
+        {% endfor %}
+
+        {% for sector in sectors %}
+            {% if sector.name in current_filters.sector %}
+                {% component "tag-switch" label=sector.name type="sector" name="sector" value=sector.name checked=True / %}
+            {% else %}
+                {% component "tag-switch" label=sector.name type="sector" name="sector" value=sector.name checked=False / %}
+            {% endif %}
+        {% endfor %}
+
+        {% for category in issue_categories %}
+            {% if category.name in current_filters.issue_category %}
+                {% component "tag-switch" label=category.name type="category" name="issue-category" value=category.name checked=True / %}
+            {% else %}
+                {% component "tag-switch" label=category.name type="category" name="issue-category" value=category.name checked=False / %}
+            {% endif %}
+        {% endfor %}
+    </form>
+</aside>
 {% endblock %}

@@ -19,7 +19,7 @@ class DevelopmentView(TemplateView):
 
 
 class TicketListView(LoginRequiredMixin, TemplateView):
-    template_name = 'ticket/list.html' 
+    template_name = 'ticket/list.html'
 
     def get_template_names(self):
         """Determina qué template usar basado en si es una solicitud HTMX"""
@@ -30,19 +30,30 @@ class TicketListView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        queryset = Ticket.objects.all() if self.request.user.is_staff else Ticket.objects.get_queryset(user=self.request.user).distinct()
+        current_filters = {}
 
-        # Filtrado por udns
+        # Obtener el queryset de tickets permitidos para el usuario
+        permitted_tickets = Ticket.objects.all() if self.request.user.is_staff else Ticket.objects.get_queryset(user=self.request.user).distinct()
+
+        # Obtener los UDNs permitidos para el usuario
+        permitted_udns = UDN.objects.filter(ticket__in=permitted_tickets).distinct().order_by('name')
+
+        # Obtener los Sectores permitidos para el usuario
+        permitted_sectors = Sector.objects.filter(ticket__in=permitted_tickets).distinct().order_by('name')
+
+        # Obtener las Categorías de Incidencia permitidas para el usuario
+        permitted_issue_categories = IssueCategory.objects.filter(ticket__in=permitted_tickets).distinct().order_by('name')
+
+        # Aplicar los filtros de la request
+        queryset = permitted_tickets
         if 'udn' in self.request.GET:
             udn = self.request.GET.getlist('udn')
             queryset = queryset.filter(udn__in=udn)
 
-        # Filtrado por sectors
         if 'sector' in self.request.GET:
             sector = self.request.GET.getlist('sector')
             queryset = queryset.filter(sector__in=sector)
 
-        # Filtrado por issue-category
         if 'issue_category' in self.request.GET:
             issue_category = self.request.GET.getlist('issue_category')
             queryset = queryset.filter(issue_category__in=issue_category)
@@ -55,6 +66,11 @@ class TicketListView(LoginRequiredMixin, TemplateView):
 
         context['page_obj'] = page_obj
         context['tickets'] = page_obj.object_list
+        context['udns'] = permitted_udns
+        context['sectors'] = permitted_sectors
+        context['issue_categories'] = permitted_issue_categories
+        context['current_filters'] = current_filters
+
 
         return context
 

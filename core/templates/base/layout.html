@@ -25,6 +25,10 @@
     <header>
         {% include "base/navbar.html" %}
     </header>
+
+    <aside>
+        {% block aside %}{% endblock %}
+    </aside>
     
     <main>
         {% block content %}{% endblock %}
