@@ -94,6 +94,18 @@ class Ticket(models.Model):
         """Devuelve la URL para el endpoint de confirmación de cierre del ticket"""
         return reverse('htmx-confirm-close', kwargs={'ticket_id': self.id})
 
+    @property
+    def created_by(self):
+        """Devuelve el usuario que creó el ticket (el primer mensaje)."""
+        first_message = self.messages.order_by('created_on').first()
+        return first_message.user if first_message else None
+
+    @property
+    def status(self):
+        """Devuelve el estado actual del ticket (el estado del último mensaje)."""
+        last_message = self.messages.order_by('-created_on').first()
+        return last_message.status if last_message else None
+
 
 class Message(models.Model):
     STATUS_CHOICES = [

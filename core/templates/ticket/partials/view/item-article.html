@@ -20,12 +20,12 @@
                     <span class="tag tag-category">{{ ticket.issue_category }}</span>
                 {% with last_message=ticket.messages.last %}
                     {% if last_message %}
-                        <span class="status status-{{ last_message.status|lower }} gap-2">
-                            <i class="fa 
-                            {% if last_message.status == 'closed' %}fa-check-circle
+                        <span class="status status-{{ last_message.status|lower }} gap-2 flex items-center">
+                            <i class="fa {% if last_message.status == 'closed' %}fa-check-circle
                             {% elif last_message.status == 'solved' %}fa-wrench
                             {% elif last_message.status == 'open' %}fa-exclamation-circle
-                            {% else %}fa-circle-o{% endif %}"></i> 
+                            {% elif last_message.status == 'feedback' %}fa-comment
+                            {% else %}fa-circle-o{% endif %}"></i>
                             {{ last_message.get_status_display }}
                         </span>
                     {% endif %}

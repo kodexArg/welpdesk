@@ -1,0 +1,50 @@
+{% load static %}
+
+<label class="tag-switch">
+  <input
+    type="checkbox"
+    name="status"
+    value="{{ status }}"
+    {% if checked %}checked{% endif %}
+    class="tag-switch-input hidden"
+    {% if hx_get %}hx-get="{{ hx_get }}"{% endif %}
+    {% if hx_target %}hx-target="{{ hx_target }}"{% endif %}
+    {% if hx_swap %}hx-swap="{{ hx_swap }}"{% endif %}
+    {% if hx_trigger %}hx-trigger="{{ hx_trigger }}"{% endif %}
+    {% if hx_include %}hx-include="{{ hx_include }}"{% endif %}
+    {% if hx_vals %}hx-vals="{{ hx_vals }}"{% endif %}>
+  <span class="status status-{{ status }} cursor-pointer transition-all duration-200 inline-block select-none tag-unpressed flex items-center gap-1">
+    <i class="fa {{ icon }}"></i>
+    {% if status == "open" %}Abierto{% endif %}
+    {% if status == "solved" %}Solucionado{% endif %}
+    {% if status == "closed" %}Cerrado{% endif %}
+    {% if status == "feedback" %}Comentado{% endif %}
+  </span>
+</label>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const tagSwitches = document.querySelectorAll('.tag-switch-input');
+
+    tagSwitches.forEach(function(switchInput) {
+      // Establecer el estado inicial
+      updateTagAppearance(switchInput);
+
+      // Añadir evento de cambio
+      switchInput.addEventListener('change', function(e) {
+        updateTagAppearance(this);
+      });
+    });
+
+    function updateTagAppearance(input) {
+      const tagElement = input.nextElementSibling;
+      if (input.checked) {
+        tagElement.classList.add('tag-pressed');
+        tagElement.classList.remove('tag-unpressed');
+      } else {
+        tagElement.classList.remove('tag-pressed');
+        tagElement.classList.add('tag-unpressed');
+      }
+    }
+  });
+</script>

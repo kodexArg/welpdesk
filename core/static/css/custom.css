@@ -66,15 +66,15 @@
     }
 
     .tag-udn {
-        @apply bg-[var(--color-tag-udn-bg)] text-[var(--color-tag-udn-text)] border-[var(--color-tag-udn-border)];
+        @apply bg-yellow-100 text-amber-600 border-amber-300;
     }
 
     .tag-sector {
-        @apply bg-[var(--color-tag-sector-bg)] text-[var(--color-tag-sector-text)] border-[var(--color-tag-sector-border)];
+        @apply bg-sky-100 text-sky-700 border-sky-300;
     }
 
     .tag-category {
-        @apply bg-[var(--color-tag-category-bg)] text-[var(--color-tag-category-text)] border-[var(--color-tag-category-border)];
+        @apply bg-purple-100 text-purple-700 border-purple-300;
     }
 
     .tag-unpressed {
@@ -90,19 +90,18 @@
     }
 
     .status-open {
-        @apply bg-[var(--color-status-open-bg)] text-[var(--color-status-open-text)] border border-[var(--color-status-open-border)];
+        @apply bg-red-100 text-red-700 border-red-300;
     }
 
-    .status-pending {
-        @apply bg-[var(--color-status-pending-bg)] text-[var(--color-status-pending-text)] border border-[var(--color-status-pending-border)];
+    .status-feedback {
+        @apply bg-sky-200 text-sky-700 border-sky-600;
     }
 
     .status-closed {
-        @apply bg-[var(--color-status-closed-bg)] text-[var(--color-status-closed-text)] border border-[var(--color-status-closed-border)];
+        @apply bg-gray-200 text-gray-700 border-gray-400;
     }
 
     .status-solved {
-        @apply bg-[#e3f2fd] text-[#2e6996] border border-[#bbdefb];
+        @apply bg-green-200 text-green-700 border-green-500;
     }
-
 }

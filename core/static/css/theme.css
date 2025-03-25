@@ -55,28 +55,6 @@
     --navbar-link-active: var(--color-sky-200);
     --navbar-separator: var(--color-sky-800);
     --navbar-separator-opacity: 0.8;
-
-    /* Tags */
-    --color-tag-udn-bg: #fff8e1;
-    --color-tag-udn-text: #a86922;
-    --color-tag-udn-border: #ffecb3;
-    --color-tag-sector-bg: #e3f2fd;
-    --color-tag-sector-text: #5d6f91;
-    --color-tag-sector-border: #bbdefb;
-    --color-tag-category-bg: #f3e5f5;
-    --color-tag-category-text: #796491;
-    --color-tag-category-border: #d1c4e9;
-    
-    /* Estados de tickets */
-    --color-status-open-bg: #FFDEDE;
-    --color-status-open-text: #C62828;
-    --color-status-open-border: #FFCDD2;
-    --color-status-pending-bg: #E8F5E9;
-    --color-status-pending-text: #407143;
-    --color-status-pending-border: #C8E6C9;
-    --color-status-closed-bg: #EEEEEE;
-    --color-status-closed-text: #424242;
-    --color-status-closed-border: #E0E0E0;
     
     /* Paginación */
     --pagination-info-color: var(--color-sky-800);

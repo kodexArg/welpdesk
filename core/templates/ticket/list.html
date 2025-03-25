@@ -19,75 +19,68 @@
 {% block aside %}
 <aside>
     <form 
-        class="px-3 py-2 flex flex-wrap gap-1 w-60 bg-sky-800"
+        class="w-60 bg-sky-800"
         id="filter-form"
         hx-get="."
         hx-target="#list-container"
         hx-trigger="change"
         hx-include="this">
-        {% for udn in user_allowed_udns %}
-            {% if udn.name in current_filters.udn %}
-                {% component "tag-switch"
-                    label=udn.name
-                    type="udn"
-                    name="udn"
-                    value=udn.pk
-                    checked=True
-                / %}
-            {% else %}
-                {% component "tag-switch"
-                    label=udn.name
-                    type="udn"
-                    name="udn"
-                    value=udn.pk
-                    checked=False
-                / %}
-            {% endif %}
-        {% endfor %}
+        <div class="px-3 py-2 flex flex-wrap gap-1">
+            {% for udn in user_allowed_udns %}
+                {% if udn.name in current_filters.udn %}
+                    {% component "tag-switch" label=udn.name type="udn" name="udn" value=udn.pk checked=True / %}
+                {% else %}
+                    {% component "tag-switch" label=udn.name type="udn" name="udn" value=udn.pk checked=False / %}
+                {% endif %}
+            {% endfor %}
 
-        {% for sector in user_allowed_sectors %}
-            {% if sector.name in current_filters.sector %}
-                {% component "tag-switch"
-                    label=sector.name
-                    type="sector"
-                    name="sector"
-                    value=sector.pk
-                    checked=True
-                / %}
-            {% else %}
-                {% component "tag-switch"
-                    label=sector.name
-                    type="sector"
-                    name="sector"
-                    value=sector.pk
-                    checked=False
-                / %}
-            {% endif %}
-        {% endfor %}
+            {% for sector in user_allowed_sectors %}
+                {% if sector.name in current_filters.sector %}
+                    {% component "tag-switch" label=sector.name type="sector" name="sector" value=sector.pk checked=True / %}
+                {% else %}
+                    {% component "tag-switch" label=sector.name type="sector" name="sector" value=sector.pk checked=False / %}
+                {% endif %}
+            {% endfor %}
 
-        {% for issue_category in user_allowed_issue_categories %}
-            {% if issue_category.name in current_filters.category %}
-                {% component "tag-switch"
-                    label=issue_category.name
-                    type="category"
-                    name="category"
-                    value=issue_category.pk
-                    checked=True
-                / %}
+            {% for issue_category in user_allowed_issue_categories %}
+                {% if issue_category.name in current_filters.category %}
+                    {% component "tag-switch" label=issue_category.name type="category" name="category" value=issue_category.pk checked=True / %}
+                {% else %}
+                    {% component "tag-switch" label=issue_category.name type="category" name="category" value=issue_category.pk checked=False / %}
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="px-3 pt-1 flex flex-wrap gap-1">
+            {% if "open" in current_filters.status %}
+                {% component "status-switch" status="open" checked=True / %}
             {% else %}
-                {% component "tag-switch"
-                    label=issue_category.name
-                    type="category"
-                    name="category"
-                    value=issue_category.pk
-                    checked=False
-                / %}
+                {% component "status-switch" status="open" checked=False / %}
             {% endif %}
-        {% endfor %}
+
+            {% if "solved" in current_filters.status %}
+                {% component "status-switch" status="solved" checked=True / %}
+            {% else %}
+                {% component "status-switch" status="solved" checked=False / %}
+            {% endif %}
+
+            {% if "closed" in current_filters.status %}
+                {% component "status-switch" status="closed" checked=True / %}
+            {% else %}
+                {% component "status-switch" status="closed" checked=False / %}
+            {% endif %}
+
+            {% if "feedback" in current_filters.status %}
+                {% component "status-switch" status="feedback" checked=True / %}
+            {% else %}
+                {% component "status-switch" status="feedback" checked=False / %}
+            {% endif %}
+        </div>
+    
 
     </form>
     <button type="button" id="collapse-filters"
-        class="w-full p-4 bg-sky-800 border-sky-800 text-white rounded-br-2xl flex items-center justify-center hover:bg-sky-600 transition-colors duration-200">
+        class="w-full p-3 bg-sky-800 border-sky-800 text-white rounded-br-2xl flex items-center justify-center hover:bg-sky-600 transition-colors duration-200">
         <i class="fa fa-caret-up fa-lg"></i>
     </button>
 </aside>
