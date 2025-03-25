@@ -19,7 +19,7 @@
 {% block aside %}
 <aside>
     <form 
-        class="w-70 bg-sky-800"
+        class="w-70 bg-sky-800 hidden"
         id="filter-form"
         hx-get="."
         hx-target="#list-container"
@@ -81,7 +81,7 @@
     </form>
     <button type="button" id="collapse-filters"
         class="w-full p-3 bg-sky-800 border-sky-800 text-white rounded-br-2xl flex items-center justify-center hover:bg-sky-600 transition-colors duration-200">
-        <i class="fa fa-caret-up fa-lg"></i>
+        <i class="fa fa-filter"></i>
     </button>
 </aside>
 {% endblock %}
