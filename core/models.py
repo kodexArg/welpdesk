@@ -65,9 +65,11 @@ class TicketManager(models.Manager):
         queryset = super().get_queryset()
         if user and not user.is_superuser:
             return queryset.filter(
-                udn__permission_group__in=user.groups.all(),
-                sector__permission_group__in=user.groups.all()
-            )
+                Q(udn__permission_group__in=user.groups.all()) |
+                Q(sector__permission_group__in=user.groups.all()) |
+                Q(udn__groups__in=user.groups.all()) |
+                Q(sector__groups__in=user.groups.all())
+            ).distinct()
         return queryset
 
 

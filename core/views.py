@@ -29,6 +29,15 @@ class TicketListView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        print("DEBUG:")
+        print(f"Usuario: {self.request.user.username}")
+        print(f"Grupos del usuario: {list(self.request.user.groups.all())}")
+        
+        permitted_tickets = Ticket.objects.all() if self.request.user.is_staff else Ticket.objects.get_queryset(user=self.request.user).distinct()
+        
+        print(f"Query SQL: {permitted_tickets.query}")
+        print(f"Cantidad de tickets: {permitted_tickets.count()}")
 
         # Aquí es donde accedes a los parámetros enviados por el formulario en la URL (request.GET)
         current_filters = {
@@ -37,9 +46,6 @@ class TicketListView(LoginRequiredMixin, TemplateView):
             'category': set(self.request.GET.getlist('category')),
             'status': set(self.request.GET.getlist('status')),  # Obtiene lista de estados
         }
-
-        # Obtener el queryset de tickets permitidos para el usuario
-        permitted_tickets = Ticket.objects.all() if self.request.user.is_staff else Ticket.objects.get_queryset(user=self.request.user).distinct()
 
         # Obtener las categorías permitidas para el usuario
         permitted_udns = UDN.objects.filter(ticket__in=permitted_tickets).distinct().order_by('name')
