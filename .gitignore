@@ -1,5 +1,5 @@
-staticfiles/
-mediafiles/
+# staticfiles/
+# mediafiles/
 
 # Archivos de Python generados
 __pycache__/
