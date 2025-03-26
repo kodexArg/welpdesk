@@ -122,7 +122,7 @@ services:
     command: >
       bash -c "python manage.py collectstatic --noinput &&
                python manage.py migrate &&
-               gunicorn project.wsgi:application --bind 0.0.0.0:8080 --workers=3 --threads=2 --max-requests=2000 --max-requests-jitter=200"
+               gunicorn project.wsgi:application --bind 0.0.0.0:80 --workers=3 --threads=2 --max-requests=2000 --max-requests-jitter=200"
     volumes:
       - staticfiles:/app/staticfiles
       - mediafiles:/app/mediafiles
@@ -134,7 +134,7 @@ services:
       - staticfiles:/staticfiles:ro
       - mediafiles:/mediafiles:ro
     ports:
-      - "8080:80"
+      - "80:80"
 ```
 
 ### Configuración para entornos de producción
@@ -210,7 +210,7 @@ urlpatterns += [
    docker-compose exec web python manage.py createsuperuser
    ```
 
-El sistema estará disponible en http://localhost:8080 (o el puerto configurado).
+El sistema estará disponible en http://localhost (o el puerto configurado).
 
 ## Personalización para necesidades específicas
 
