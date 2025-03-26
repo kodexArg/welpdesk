@@ -32,9 +32,9 @@ services:
     command: >
       bash -c "python manage.py collectstatic --noinput &&
                python manage.py migrate &&
-               gunicorn project.wsgi:application --bind 0.0.0.0:80 --workers=3 --threads=2 --max-requests=2000 --max-requests-jitter=200"
+               gunicorn project.wsgi:application --bind 0.0.0.0:8080 --workers=3 --threads=2 --max-requests=2000 --max-requests-jitter=200"
     expose:
-      - "80"
+      - "8080"
     depends_on:
       db:
         condition: service_healthy
