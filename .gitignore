@@ -20,7 +20,7 @@ media
 
 # Archivos generados por django-vite
 node_modules/
-assets/
+# assets/
 
 # Entornos virtuales
 .venv/
