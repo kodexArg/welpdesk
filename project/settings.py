@@ -146,8 +146,7 @@ MEDIA_URL = '/media/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'mediafiles'
+MEDIA_ROOT = '/app/welpdesk/mediafiles'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'core', 'static'),
