@@ -4,8 +4,26 @@ from django.contrib.auth.models import User, Group
 from django.urls import reverse
 
 
-
 class UDN(models.Model):
+    """
+    Unidad de Negocio (UDN) representa divisiones principales como sucursales o departamentos.
+    
+    Relaciones con grupos:
+    - permission_group: Grupos con permisos administrativos sobre esta UDN (ej. "Administrative", "Administrativo").
+      Estos grupos pueden gestionar la UDN desde el panel de administración.
+    - groups: Grupos específicos asociados a esta UDN (ej. "UDN Km 1151", "UDN Las Bóvedas").
+      Los usuarios en estos grupos pueden ver tickets de esta UDN.
+    
+    Ejemplo:
+        udn_oficina = UDN.objects.get(name="Oficina Central")
+        # Dar permiso administrativo al grupo "Administrative"
+        admin_group = Group.objects.get(name="Administrative")
+        udn_oficina.permission_group.add(admin_group)
+        
+        # Asociar el grupo específico "UDN Oficina Central"
+        udn_group = Group.objects.get(name="UDN Oficina Central")
+        udn_oficina.groups.add(udn_group)
+    """
     name = models.CharField(max_length=255, verbose_name="Nombre")
     permission_group = models.ManyToManyField(Group, blank=True, related_name="udn_permissions", verbose_name="Grupos de Permisos")
     groups = models.ManyToManyField(Group, related_name='udns', blank=True)
@@ -19,6 +37,28 @@ class UDN(models.Model):
 
 
 class Sector(models.Model):
+    """
+    Sector representa áreas funcionales dentro de una UDN (por ejemplo, TI, RRHH, Finanzas).
+    
+    Relaciones con grupos:
+    - permission_group: Grupos con permisos administrativos sobre este Sector (ej. "Administrative").
+      Estos grupos pueden gestionar este Sector desde el panel de administración.
+    - groups: Grupos específicos asociados a este Sector (ej. "SECTOR Playa", "SECTOR Parador").
+      Los usuarios en estos grupos pueden ver tickets de este Sector.
+    
+    La combinación de permisos UDN+Sector define qué tickets puede ver un usuario.
+    Un usuario debe tener acceso tanto a la UDN como al Sector para ver un ticket.
+    
+    Ejemplo:
+        sector_ti = Sector.objects.get(name="TI")
+        # Dar permiso administrativo al grupo "Administrative"
+        admin_group = Group.objects.get(name="Administrative")
+        sector_ti.permission_group.add(admin_group)
+        
+        # Asociar el grupo específico "SECTOR TI"
+        sector_group = Group.objects.get(name="SECTOR TI")
+        sector_ti.groups.add(sector_group)
+    """
     udn = models.ManyToManyField(UDN, related_name="sectors", verbose_name="UDNs")
     name = models.CharField(max_length=255, verbose_name="Nombre")
     permission_group = models.ManyToManyField(Group, blank=True, related_name="sector_permissions", verbose_name="Grupos de Permisos")
@@ -33,6 +73,22 @@ class Sector(models.Model):
 
 
 class IssueCategory(models.Model):
+    """
+    Categoría de problemas asociada a sectores específicos.
+    
+    Relaciones con grupos:
+    - permission_group: Grupos con permisos para gestionar esta categoría (ej. "Administrative").
+      Estos grupos pueden administrar estas categorías desde el panel de administración.
+    
+    A diferencia de UDN y Sector, IssueCategory solo tiene permission_group, ya que no requiere
+    grupos específicos para controlar la visibilidad (eso lo hacen UDN y Sector).
+    
+    Ejemplo:
+        categoria_hardware = IssueCategory.objects.get(name="Hardware")
+        # Dar permiso administrativo al grupo "IT Support"
+        soporte_group = Group.objects.get(name="IT Support")
+        categoria_hardware.permission_group.add(soporte_group)
+    """
     name = models.CharField(max_length=255, verbose_name="Nombre")
     sector = models.ManyToManyField("Sector", related_name="issue_categories", verbose_name="Sectores")
     permission_group = models.ManyToManyField(Group, blank=True, related_name="category_permissions", verbose_name="Grupos de Permisos")
@@ -46,6 +102,19 @@ class IssueCategory(models.Model):
 
 
 class Issue(models.Model):
+    """
+    Incidencia específica dentro de una categoría.
+    
+    Relaciones con grupos:
+    - permission_group: Grupos con permisos para gestionar este tipo de incidencia (ej. "Soporte").
+      Define qué grupos de usuarios pueden administrar este tipo de incidencia.
+    
+    Ejemplo:
+        incidencia_pc = Issue.objects.get(name="PC no enciende")
+        # Dar permiso administrativo al grupo "Soporte Técnico"
+        soporte_group = Group.objects.get(name="Soporte Técnico")
+        incidencia_pc.permission_group.add(soporte_group)
+    """
     issue_category = models.ForeignKey(IssueCategory, on_delete=models.CASCADE, related_name="issues", verbose_name="Categoría")
     name = models.CharField(max_length=255, verbose_name="Nombre")
     display_name = models.CharField(max_length=255, verbose_name="Nombre a Mostrar", blank=True, null=True)
@@ -61,6 +130,24 @@ class Issue(models.Model):
 
 
 class TicketManager(models.Manager):
+    """
+    Gestor personalizado para el modelo Ticket que filtra automáticamente 
+    los tickets según los permisos del usuario.
+    
+    La lógica de filtrado utiliza tanto permission_group como groups:
+    - Un usuario puede ver tickets donde tiene permisos administrativos sobre la UDN o es miembro de un grupo asociado a ella
+    - Y ADEMÁS tiene permisos administrativos sobre el Sector o es miembro de un grupo asociado a él
+    
+    Los superusuarios (is_superuser=True) pueden ver todos los tickets.
+    
+    Ejemplo:
+        # En una vista:
+        user = request.user
+        visible_tickets = Ticket.objects.get_queryset(user=user)
+        
+        # Un usuario en el grupo "UDN Las Bóvedas" y "SECTOR Playa" verá solo
+        # tickets de esa UDN y ese Sector
+    """
     def get_queryset(self, user=None):
         queryset = super().get_queryset()
         if user and not user.is_superuser:
